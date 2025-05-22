@@ -50,7 +50,7 @@ export default function RootLayout({
           >
             <Layout className="">
               <SessionSidebar />
-              <Layout className="h-screen">
+              <Layout className="h-screen w-full">
                 <HeaderPanel />
                 <ChatWorkspace />
                 <InputPanel />

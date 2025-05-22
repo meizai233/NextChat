@@ -1,9 +1,9 @@
-import { Layout } from "antd";
-
+import { Layout, Input } from "antd";
+import { EditOutlined, ClockCircleOutlined, MoreOutlined, BellOutlined } from "@ant-design/icons";
 // 头部样式 - 浅色简洁设计
 const headerStyle: React.CSSProperties = {
   background: "#ffffff",
-  padding: "0 ",
+  padding: "0 20px",
   height: "64px",
   lineHeight: "64px",
   boxShadow: "0 1px 2px rgba(0, 0, 0, 0.03)",
@@ -22,8 +22,19 @@ const headerStyle: React.CSSProperties = {
 export default function HeaderPanel({ children }) {
   return (
     <Layout.Header style={headerStyle}>
-      {children}
-      header
+      {/* 左侧：标题和编辑图标 */}
+      <div className="flex items-center space-x-2">
+        <h1 className="text-xl font-semibold text-gray-800">Chat App</h1>
+        <EditOutlined className="text-gray-500 hover:text-gray-700 cursor-pointer" />
+      </div>
+
+      {/* 右侧：搜索框和图标 */}
+      <div className="flex items-center space-x-4">
+        <Input.Search placeholder="Search" allowClear className="w-64" />
+        <ClockCircleOutlined className="text-gray-500 hover:text-gray-700 cursor-pointer" />
+        <MoreOutlined className="text-gray-500 hover:text-gray-700 cursor-pointer" />
+        <BellOutlined className="text-gray-500 hover:text-gray-700 cursor-pointer" />
+      </div>
     </Layout.Header>
   );
 }

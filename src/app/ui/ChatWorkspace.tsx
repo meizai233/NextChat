@@ -9,7 +9,6 @@ const contentStyle: React.CSSProperties = {
   flex: "1",
   flexDirection: "column",
   gap: "24px",
-  minHeight: "calc(100vh - 64px - 70px)", // 减去头部和底部高度
   textAlign: "left",
   lineHeight: "1.5",
   color: "#333333",
