@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  width: 100%;
+  overscroll-behavior: none;
+}
+
+/* 如果使用了 AntdRegistry，确保它不会引入额外宽度 */
+div#__next,
+div#root {
+  width: 100%;
+  overflow-x: hidden;
+}
