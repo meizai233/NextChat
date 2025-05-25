@@ -5,9 +5,7 @@ import { ConfigProvider, Layout } from "antd";
 import { theme } from "antd";
 import { UploadOutlined, UserOutlined, VideoCameraOutlined } from "@ant-design/icons";
 import SessionSidebar from "../ui/SessionSidebar";
-import HeaderPanel from "../ui/HeaderPanel";
-import ChatWorkspace from "../ui/ChatWorkspace";
-import InputPanel from "../ui/InputPanel";
+import ChatPage from "./page";
 
 const items = [UserOutlined, VideoCameraOutlined, UploadOutlined, UserOutlined].map((icon, index) => ({
   key: String(index + 1),
@@ -51,9 +49,7 @@ export default function RootLayout({
             <Layout className="">
               <SessionSidebar />
               <Layout className="h-screen w-full">
-                <HeaderPanel />
-                <ChatWorkspace />
-                <InputPanel />
+                <ChatPage />
               </Layout>
             </Layout>
           </ConfigProvider>

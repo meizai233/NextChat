@@ -13,10 +13,9 @@ export const maxDuration = 30;
 export async function POST(req: Request) {
   // Extract the `messages` from the body of the request
   const { messages, id } = await req.json();
-  console.log("chat1111 id", id); // can be used for persisting the chat
 
   // Call the language model
-  // ??? streamText是啥呢
+  // 待办 streamText是啥呢
   const result = streamText({
     model: openai("gpt-3.5-turbo"),
     messages,

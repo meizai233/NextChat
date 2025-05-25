@@ -1,7 +1,16 @@
+import React, { useCallback, KeyboardEvent, ChangeEvent } from "react";
 import { SmileOutlined, PaperClipOutlined, SettingOutlined, SendOutlined } from "@ant-design/icons";
 import { Layout, Input } from "antd";
-import React, { ChangeEvent, useCallback } from "react";
 const { TextArea } = Input;
+
+// 定义组件 props 接口
+interface InputPanelProps {
+  value: string;
+  onChange: (value: string) => void;
+  isLoading?: boolean;
+  onSend: () => void;
+  modelName?: string;
+}
 
 // 底部样式 - 输入区域
 const footerStyle: React.CSSProperties = {
@@ -14,16 +23,6 @@ const footerStyle: React.CSSProperties = {
   zIndex: 10,
   boxShadow: "0 -2px 10px rgba(0, 0, 0, 0.02)",
 };
-
-// 定义组件 props 接口
-// 待办 这个modelName需要有一个映射关系
-interface InputPanelProps {
-  value: string;
-  onChange: (value: string) => void;
-  isLoading?: boolean;
-  onSend: () => void;
-  modelName?: string;
-}
 
 const InputPanel: React.FC<InputPanelProps> = ({ value, onChange, isLoading = false, onSend, modelName = "GPT-4" }) => {
   // 处理键盘事件
