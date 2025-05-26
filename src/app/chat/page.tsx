@@ -2,9 +2,9 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
 // 待办 能不能自动引入 @xxx
-import ChatWorkspace from "@app/ui/ChatWorkspace";
-import HeaderPanel from "@app/ui/HeaderPanel";
-import InputPanel from "@app/ui/InputPanel";
+import ChatWorkspace from "@/ui/ChatWorkspace";
+import HeaderPanel from "@/ui/HeaderPanel";
+import InputPanel from "@/ui/InputPanel";
 import { useChat } from "@ai-sdk/react";
 
 export default function ChatPage(props) {
