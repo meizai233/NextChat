@@ -1,89 +1,75 @@
-import React, { useCallback, KeyboardEvent, ChangeEvent } from "react";
-import { SmileOutlined, PaperClipOutlined, SettingOutlined, SendOutlined } from "@ant-design/icons";
-import { Layout, Input } from "antd";
-const { TextArea } = Input;
-
-// 定义组件 props 接口
-interface InputPanelProps {
-  value: string;
-  onChange: (value: string) => void;
+interface ChatInputProps {
+  onSend: (message: string) => void;
   isLoading?: boolean;
-  onSend: () => void;
-  modelName?: string;
+  className?: string;
+  placeholder?: string;
 }
 
-// 底部样式 - 输入区域
-const footerStyle: React.CSSProperties = {
-  background: "#ffffff",
-  height: "100px",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  borderTop: "1px solid #eaeaea",
-  zIndex: 10,
-  boxShadow: "0 -2px 10px rgba(0, 0, 0, 0.02)",
-};
+export function ChatInput({
+  onSend,
+  isLoading = false,
+  className,
+  placeholder = "输入消息...",
+}: ChatInputProps) {
+  const [message, setMessage] = useState<string>("");
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-const InputPanel: React.FC<InputPanelProps> = ({ value, onChange, isLoading = false, onSend, modelName = "GPT-4" }) => {
-  // 处理键盘事件
-  const handleKeyDown = useCallback(
-    (e: KeyboardEvent<HTMLTextAreaElement>) => {
-      if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        onSend();
-      }
-    },
-    [onSend]
-  );
-
-  // 处理文本变化
-  const handleTextChange = useCallback(
-    (e: ChangeEvent<HTMLTextAreaElement>) => {
-      onChange(e.target.value);
-    },
-    [onChange]
-  );
-
-  // 处理发送按钮点击
-  const handleSendClick = useCallback(() => {
-    if (!isLoading) {
-      onSend();
+  const handleSend = () => {
+    if (message.trim() && !isLoading) {
+      onSend(message.trim());
+      setMessage("");
+      textareaRef.current?.focus();
     }
-  }, [isLoading, onSend]);
+  };
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
 
   return (
-    <Layout.Footer className="w-full flex-col" style={footerStyle}>
-      {/* 上半部分 */}
-      <div className="w-full flex items-center justify-between mb-2 h-8">
-        {/* 左侧图标 */}
-        <div className="flex space-x-4">
-          <SmileOutlined className="text-gray-500 hover:text-gray-700 cursor-pointer text-xl" aria-label="Emoji picker" />
-          <PaperClipOutlined className="text-gray-500 hover:text-gray-700 cursor-pointer text-xl" aria-label="Attach file" />
-          <SettingOutlined className="text-gray-500 hover:text-gray-700 cursor-pointer text-xl" aria-label="Settings" />
-        </div>
-        {/* 右侧模型名称和发送图标 */}
-        <div className="flex items-center space-x-2">
-          <span className="text-gray-700 font-medium">{modelName}</span>
-          <SendOutlined
-            className={`${isLoading ? "text-gray-400 cursor-not-allowed" : "text-blue-500 hover:text-blue-700 cursor-pointer"} text-xl`}
-            onClick={handleSendClick}
-            aria-label="Send message"
-          />
-        </div>
-      </div>
-      {/* 下半部分：输入框 */}
-      <TextArea
-        value={value}
-        onChange={handleTextChange}
+    <div
+      className={cn(
+        "bg-background flex w-full flex-col rounded-lg border p-2",
+        className,
+      )}
+    >
+      <Textarea
+        ref={textareaRef}
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
         onKeyDown={handleKeyDown}
-        rows={2}
-        disabled={isLoading}
-        placeholder="请输入消息..."
-        className="w-full border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-        aria-label="Message input"
+        placeholder={placeholder}
+        className="min-h-10 resize-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+        rows={1}
+        autoComplete="off"
       />
-    </Layout.Footer>
-  );
-};
 
-export default InputPanel;
+      <div className="flex items-center justify-between pt-2">
+        <div className="flex items-center gap-2">
+          <Button type="button" size="icon" variant="ghost">
+            <Paperclip className="h-5 w-5" />
+          </Button>
+          <Button type="button" size="icon" variant="ghost">
+            <Mic className="h-5 w-5" />
+          </Button>
+          <Button type="button" size="icon" variant="ghost">
+            <Smile className="h-5 w-5" />
+          </Button>
+        </div>
+
+        <Button
+          onClick={handleSend}
+          disabled={isLoading || !message.trim()}
+          size="sm"
+          className="gap-1"
+        >
+          {isLoading ? "发送中..." : "发送"}
+          <PaperPlaneIcon className="h-4 w-4" />
+        </Button>
+      </div>
+    </div>
+  );
+}
