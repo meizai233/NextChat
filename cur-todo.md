@@ -1,3 +1,5 @@
+themeProvider 和 sessionProvider 自己手写一个
+
 openai 的连接实例 以及 openai 的相关方法应该放在全局 zustand 里
 -> get openai 的所有模型列表 并保存在全局状态里
 -> 探讨 useContext 的缺点 为什么需要状态管理库 1111

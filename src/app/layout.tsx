@@ -1,5 +1,6 @@
 import React from "react";
-import { AntdRegistry } from "@ant-design/nextjs-registry";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/app-sidebar.tsx";
 import "./globals.css"; // 确保导入全局样式
 
 export default function RootLayout({
@@ -10,7 +11,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <AntdRegistry>{children}</AntdRegistry>
+        <div className="flex">
+          <SidebarProvider>
+            <AppSidebar />
+            <main className="flex-1">{children}</main>
+          </SidebarProvider>
+        </div>
       </body>
     </html>
   );

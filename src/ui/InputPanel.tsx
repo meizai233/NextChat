@@ -1,4 +1,9 @@
-import { SmileOutlined, PaperClipOutlined, SettingOutlined, SendOutlined } from "@ant-design/icons";
+import {
+  SmileOutlined,
+  PaperClipOutlined,
+  SettingOutlined,
+  SendOutlined,
+} from "@ant-design/icons";
 import { Layout, Input } from "antd";
 import React, { ChangeEvent, useCallback } from "react";
 const { TextArea } = Input;
@@ -25,7 +30,13 @@ interface InputPanelProps {
   modelName?: string;
 }
 
-const InputPanel: React.FC<InputPanelProps> = ({ value, onChange, isLoading = false, onSend, modelName = "GPT-4" }) => {
+const InputPanel: React.FC<InputPanelProps> = ({
+  value,
+  onChange,
+  isLoading = false,
+  onSend,
+  modelName = "GPT-4",
+}) => {
   // 处理键盘事件
   const handleKeyDown = useCallback(
     (e: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -34,7 +45,7 @@ const InputPanel: React.FC<InputPanelProps> = ({ value, onChange, isLoading = fa
         onSend();
       }
     },
-    [onSend]
+    [onSend],
   );
 
   // 处理文本变化
@@ -42,7 +53,7 @@ const InputPanel: React.FC<InputPanelProps> = ({ value, onChange, isLoading = fa
     (e: ChangeEvent<HTMLTextAreaElement>) => {
       onChange(e.target.value);
     },
-    [onChange]
+    [onChange],
   );
 
   // 处理发送按钮点击
@@ -55,18 +66,27 @@ const InputPanel: React.FC<InputPanelProps> = ({ value, onChange, isLoading = fa
   return (
     <Layout.Footer className="w-full flex-col" style={footerStyle}>
       {/* 上半部分 */}
-      <div className="w-full flex items-center justify-between mb-2 h-8">
+      <div className="mb-2 flex h-8 w-full items-center justify-between">
         {/* 左侧图标 */}
         <div className="flex space-x-4">
-          <SmileOutlined className="text-gray-500 hover:text-gray-700 cursor-pointer text-xl" aria-label="Emoji picker" />
-          <PaperClipOutlined className="text-gray-500 hover:text-gray-700 cursor-pointer text-xl" aria-label="Attach file" />
-          <SettingOutlined className="text-gray-500 hover:text-gray-700 cursor-pointer text-xl" aria-label="Settings" />
+          <SmileOutlined
+            className="cursor-pointer text-xl text-gray-500 hover:text-gray-700"
+            aria-label="Emoji picker"
+          />
+          <PaperClipOutlined
+            className="cursor-pointer text-xl text-gray-500 hover:text-gray-700"
+            aria-label="Attach file"
+          />
+          <SettingOutlined
+            className="cursor-pointer text-xl text-gray-500 hover:text-gray-700"
+            aria-label="Settings"
+          />
         </div>
         {/* 右侧模型名称和发送图标 */}
         <div className="flex items-center space-x-2">
-          <span className="text-gray-700 font-medium">{modelName}</span>
+          <span className="font-medium text-gray-700">{modelName}</span>
           <SendOutlined
-            className={`${isLoading ? "text-gray-400 cursor-not-allowed" : "text-blue-500 hover:text-blue-700 cursor-pointer"} text-xl`}
+            className={`${isLoading ? "cursor-not-allowed text-gray-400" : "cursor-pointer text-blue-500 hover:text-blue-700"} text-xl`}
             onClick={handleSendClick}
             aria-label="Send message"
           />
@@ -80,7 +100,7 @@ const InputPanel: React.FC<InputPanelProps> = ({ value, onChange, isLoading = fa
         rows={2}
         disabled={isLoading}
         placeholder="请输入消息..."
-        className="w-full border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        className="w-full rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
         aria-label="Message input"
       />
     </Layout.Footer>

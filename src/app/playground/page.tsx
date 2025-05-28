@@ -1,4 +1,9 @@
-// src/app/playground/page.tsx
-export default function PlaygroundPage() {
-  return <div>Playground Test Page</div>;
+import { ThemeToggle } from "@/components/ThemeToggle";
+
+export default function Home() {
+  return (
+    <div>
+      <ThemeToggle />
+    </div>
+  );
 }
