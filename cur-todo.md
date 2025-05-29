@@ -1,5 +1,3 @@
-themeProvider 和 sessionProvider 自己手写一个
-
 openai 的连接实例 以及 openai 的相关方法应该放在全局 zustand 里
 -> get openai 的所有模型列表 并保存在全局状态里
 -> 探讨 useContext 的缺点 为什么需要状态管理库 1111
@@ -11,3 +9,6 @@ openai 的连接实例 以及 openai 的相关方法应该放在全局 zustand �
 疑问【3】：客户端不登录的情况下 如何让服务端不要每次都发 key
 
 -> 看下人家的登录流程是怎样的呢？？？
+
+- 拿到本地env的sk key 然后调用对方的模型
+-
