@@ -1,25 +1,12 @@
 "use client";
 import { create } from "zustand";
-import { nanoid } from "nanoid";
 import { persist } from "zustand/middleware";
+import { chatSession, chatMessage } from "@lib/db/schema";
+import { createSession } from "../actions/session";
 
-// 保存一次对话消息
-export interface ChatMessage {
-  id: string;
-  content: string;
-  role: "user" | "assistant";
-  timestamp: Date;
-}
-
-// 保存一次对话上下文所有消息
-export interface ChatSession {
-  id: string;
-  title: string;
-  messages: ChatMessage[];
-  createdAt: Date;
-  updatedAt: Date;
-  model?: string; // 可选的模型选择
-}
+// 查询结果的类型
+type ChatSession = typeof chatSession.$inferInsert;
+type ChatMessage = typeof chatMessage.$inferSelect;
 
 interface ChatStore {
   sessions: ChatSession[];
@@ -41,36 +28,20 @@ export const useChatStore = create<ChatStore>()(
       sessions: [],
       currentSessionId: null,
 
-      initializeSessions: () => {
+      initializeSessions: async () => {
         if (get().sessions.length === 0) {
-          const id = nanoid();
-          const now = new Date();
-          const initialSession: ChatSession = {
-            id,
-            title: "新会话",
-            messages: [],
-            createdAt: now,
-            updatedAt: now,
-          };
+          const newSession = await createSession();
           set({
-            sessions: [initialSession],
-            currentSessionId: id,
+            sessions: [newSession],
+            currentSessionId: newSession.id,
           });
         }
       },
-      createSession: () => {
-        const id = nanoid();
-        const now = new Date();
-        const newSession: ChatSession = {
-          id,
-          title: "新会话",
-          messages: [],
-          createdAt: now,
-          updatedAt: now,
-        };
+      createSession: async () => {
+        const newSession = await createSession();
         set((state) => ({
           sessions: [newSession, ...state.sessions],
-          currentSessionId: id,
+          currentSessionId: newSession.id,
         }));
       },
       setCurrentSessionId: (id: string) => set({ currentSessionId: id }),

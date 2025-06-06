@@ -15,3 +15,12 @@
 ### zustand管理
 
 - 前端管理多个chat chat可以新增和删除 一个chat的上下文没有
+
+### 关于server actions
+
+- 使用场景：客户端调用服务器上的函数
+- 相当于暴露了一个公开接口 await fetch('http://your-site.com/app/xxx/actions.ts/deleteSession', {
+  method: 'POST',
+  body: JSON.stringify({ id: '123' })
+  }); 被公开访问，这很危险，使用前需要校验
+- next实现 其实就是把fetch api -> 路由导航 -> 函数调用 -> 返回结果 这一系列自动化了。主要是让开发更容易
