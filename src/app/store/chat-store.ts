@@ -2,7 +2,11 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { chatSession, chatMessage } from "@lib/db/schema";
-import { createSession } from "../actions/session";
+import {
+  createSession,
+  deleteSessionInDB,
+  renameSessionInDB,
+} from "../actions/session";
 
 // 查询结果的类型
 type ChatSession = typeof chatSession.$inferInsert;
@@ -45,21 +49,30 @@ export const useChatStore = create<ChatStore>()(
         }));
       },
       setCurrentSessionId: (id: string) => set({ currentSessionId: id }),
-      deleteSession: (id: string) =>
-        set((state) => ({
-          sessions: state.sessions.filter((s) => s.id !== id),
-          currentSessionId:
-            state.currentSessionId === id
-              ? state.sessions[0]?.id || null
-              : state.currentSessionId,
-        })),
+      deleteSession: async (id: string) => {
+        await deleteSessionInDB(id);
 
-      renameSession: (id: string, newTitle: string) =>
+        set((state) => {
+          const newSessions = state.sessions.filter((s) => s.id !== id);
+          const isDeletingCurrent = state.currentSessionId === id;
+          return {
+            sessions: newSessions,
+            currentSessionId: isDeletingCurrent
+              ? newSessions[0]?.id || null
+              : state.currentSessionId,
+          };
+        });
+      },
+
+      renameSession: async (id: string, newTitle: string) => {
+        await renameSessionInDB(id, newTitle);
+
         set((state) => ({
           sessions: state.sessions.map((s) =>
             s.id === id ? { ...s, title: newTitle, updatedAt: new Date() } : s,
           ),
-        })),
+        }));
+      },
       addMessage: () => {
         // 添加信息时 向后端发起请求 或者直接db连接数据库 但是这样会不会不安全
       },
