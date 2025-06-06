@@ -1,9 +1,8 @@
 "use client";
 import ChatWorkspace from "@/components/ChatWorkspace";
-import HeaderPanel from "@/components/HeaderPanel";
 import InputPanel from "@/components/InputPanel";
 import { useChat } from "@ai-sdk/react";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 
 export default function Chat(props) {
   const [isLoading, setIsLoading] = useState(false);
@@ -35,25 +34,17 @@ export default function Chat(props) {
     handleSubmit(new Event("submit")); // 触发 useChat 的提交
   }, [input]);
 
-  useEffect(() => {
-    console.log("eff", input);
-  }, [input]);
   return (
     <>
-      <div className="flex h-dvh w-full min-w-0 flex-col">
-        <HeaderPanel />
-        <div className="flex-1">
-          <ChatWorkspace messages={messages} />
-        </div>
-        {/* <InputPanel value={input} onChange={setInput} isLoading={isLoading} onSend={handleSendMessage} /> */}
-
-        <InputPanel
-          value={input}
-          onChange={setInput}
-          isLoading={isLoading}
-          onSend={handleSendMessage}
-        />
+      <div className="flex-1 overflow-y-scroll">
+        <ChatWorkspace messages={messages} />
       </div>
+      <InputPanel
+        value={input}
+        onChange={setInput}
+        isLoading={isLoading}
+        onSend={handleSendMessage}
+      />
     </>
   );
 }

@@ -50,6 +50,9 @@ dependencies:
   lucide-react:
     specifier: ^0.511.0
     version: 0.511.0(react@19.1.0)
+  nanoid:
+    specifier: ^5.1.5
+    version: 5.1.5
   next:
     specifier: 15.3.2
     version: 15.3.2(react-dom@19.1.0)(react@19.1.0)
@@ -77,6 +80,9 @@ dependencies:
   tailwind-merge:
     specifier: ^3.3.0
     version: 3.3.0
+  zustand:
+    specifier: ^5.0.5
+    version: 5.0.5(@types/react@19.1.4)(react@19.1.0)
 
 devDependencies:
   '@ant-design/nextjs-registry':
@@ -4446,6 +4452,12 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
+  /nanoid@5.1.5:
+    resolution: {integrity: sha512-Ir/+ZpE9fDsNH0hQ3C68uyThDXzYcim2EqcZ8zn8Chtt1iylPT9xXJB0kPCnqzgcEGikO9RxSrh63MsmVCU7Fw==}
+    engines: {node: ^18 || >=20}
+    hasBin: true
+    dev: false
+
   /napi-postinstall@0.2.4:
     resolution: {integrity: sha512-ZEzHJwBhZ8qQSbknHqYcdtQVr8zUgGyM/q6h6qAyhtyVMNrSgDhrC4disf03dYW0e+czXyLnZINnCTEkWy0eJg==}
     engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
@@ -6272,4 +6284,26 @@ packages:
 
   /zod@3.25.30:
     resolution: {integrity: sha512-VolhdEtu6TJr/fzGuHA/SZ5ixvXqA6ADOG9VRcQ3rdOKmF5hkmcJbyaQjUH5BgmpA9gej++zYRX7zjSmdReIwA==}
+    dev: false
+
+  /zustand@5.0.5(@types/react@19.1.4)(react@19.1.0):
+    resolution: {integrity: sha512-mILtRfKW9xM47hqxGIxCv12gXusoY/xTSHBYApXozR0HmQv299whhBeeAcRy+KrPPybzosvJBCOmVjq6x12fCg==}
+    engines: {node: '>=12.20.0'}
+    peerDependencies:
+      '@types/react': '>=18.0.0'
+      immer: '>=9.0.6'
+      react: '>=18.0.0'
+      use-sync-external-store: '>=1.2.0'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      immer:
+        optional: true
+      react:
+        optional: true
+      use-sync-external-store:
+        optional: true
+    dependencies:
+      '@types/react': 19.1.4
+      react: 19.1.0
     dev: false

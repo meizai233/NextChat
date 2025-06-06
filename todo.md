@@ -1,14 +1,16 @@
+### zustand
+
+- [ ] 为每个请求创建一个store 参考：https://zustand.docs.pmnd.rs/guides/nextjs
+-
+
 ### 可以深入的点
 
-- 对服务端渲染的细节 特别是 react 服务器组件 还是不够了解
-- useContext 和 useReducer 的区别 为什么需要有状态管理哭 而非 useContext 呢
+- 哪些场景可以用到渐进式增强
+
+- 对服务端渲染的细节 特别是 react 服务器组件 还是不够了解111
+- useContext 和 useReducer 的区别 为什么需要有状态管理哭 而非 useContext 呢111
 - 如何在浏览器中观察到 rsc 的传输和交互
 - 流式传输是啥，如何应用实践
-
-- 在 nextjs 中，服务器和客户端的组件是如何工作的
-
-  - 按照传统同构渲染来说，服务器那边请求数据库 拼接 html 把 html 返回 这时候是无交互的 纯展示，然后客户端再请求 js 资源，然后这些 js 激活客户端上绑定了事件/动态属性的地方
-  - 在 nextjs 中，服务端组件先发个套壳 html，然后再发个 rsc【具体是啥】，客户端根据收到的 js 和 rsc 进行水合
 
 - 在 nextjs 中，他们的通信 msg 是 rsc，rsc 需要传递哪些信息？
 
