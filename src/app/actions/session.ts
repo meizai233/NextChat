@@ -4,7 +4,11 @@ import { createChatSessionData } from "@/lib/utils/createChatSessionData";
 import { db } from "@lib/db"; // 数据库连接实例
 import { chatSession } from "@lib/db/schema"; // 你的表定义
 import { eq } from "drizzle-orm";
+import { getSessionsByUserId } from "@lib/db/queries/chatSession";
 
+export async function getUserSessions(userId: string) {
+  return await getSessionsByUserId(userId);
+}
 export async function createSession(userId, title = "新会话") {
   const session = createChatSessionData(userId, title);
 

@@ -17,7 +17,7 @@ interface ChatStore {
   userId: string | null;
   sessions: ChatSession[];
   currentSessionId: string | null;
-
+  setSessions: (sessions: []) => void;
   setUserId: (id: string) => void;
   initializeSessions: () => void;
   createSession: () => void;
@@ -33,6 +33,8 @@ export const useChatStore = create<ChatStore>()(
     (set, get) => ({
       userId: null,
       sessions: [],
+      setSessions: (sessions) => set({ sessions }),
+
       currentSessionId: null,
 
       setUserId: (id) => set({ userId: id }),

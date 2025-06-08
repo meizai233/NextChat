@@ -15,10 +15,10 @@ import { useChatStore } from "@store/chat-store";
 import { useCallback } from "react";
 import { IconButton } from "./ui/icon-buttom";
 
-import { useInitUserAndSession } from "@/app/hooks/useInitUserAndSession";
+import { useInitUserAndSessions } from "@/app/hooks/useInitUserAndSessions";
 
 export function AppSidebar() {
-  useInitUserAndSession();
+  useInitUserAndSessions();
 
   const sessions = useChatStore((s) => s.sessions);
   const currentSessionId = useChatStore((s) => s.currentSessionId);
