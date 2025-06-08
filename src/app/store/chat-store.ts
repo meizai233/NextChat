@@ -1,4 +1,5 @@
 "use client";
+
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { chatSession, chatMessage } from "@lib/db/schema";
@@ -8,14 +9,16 @@ import {
   renameSessionInDB,
 } from "../actions/session";
 
-// 查询结果的类型
+// 类型定义
 type ChatSession = typeof chatSession.$inferInsert;
 type ChatMessage = typeof chatMessage.$inferSelect;
 
 interface ChatStore {
+  userId: string | null;
   sessions: ChatSession[];
   currentSessionId: string | null;
-  // 操作方法
+
+  setUserId: (id: string) => void;
   initializeSessions: () => void;
   createSession: () => void;
   deleteSession: (id: string) => void;
@@ -25,22 +28,26 @@ interface ChatStore {
   updateSessionTitle: (sessionId: string, title: string) => void;
 }
 
-// 待办 后续扩展到immerjs 做撤销重做功能
 export const useChatStore = create<ChatStore>()(
   persist(
     (set, get) => ({
+      userId: null,
       sessions: [],
       currentSessionId: null,
 
+      setUserId: (id) => set({ userId: id }),
+
       initializeSessions: async () => {
+        console.log(get().userId, "get().userId");
         if (get().sessions.length === 0) {
-          const newSession = await createSession();
+          const newSession = await createSession(get().userId);
           set({
             sessions: [newSession],
             currentSessionId: newSession.id,
           });
         }
       },
+
       createSession: async () => {
         const newSession = await createSession();
         set((state) => ({
@@ -48,10 +55,11 @@ export const useChatStore = create<ChatStore>()(
           currentSessionId: newSession.id,
         }));
       },
+
       setCurrentSessionId: (id: string) => set({ currentSessionId: id }),
+
       deleteSession: async (id: string) => {
         await deleteSessionInDB(id);
-
         set((state) => {
           const newSessions = state.sessions.filter((s) => s.id !== id);
           const isDeletingCurrent = state.currentSessionId === id;
@@ -66,18 +74,27 @@ export const useChatStore = create<ChatStore>()(
 
       renameSession: async (id: string, newTitle: string) => {
         await renameSessionInDB(id, newTitle);
-
         set((state) => ({
           sessions: state.sessions.map((s) =>
             s.id === id ? { ...s, title: newTitle, updatedAt: new Date() } : s,
           ),
         }));
       },
+
       addMessage: () => {
-        // 添加信息时 向后端发起请求 或者直接db连接数据库 但是这样会不会不安全
+        // TODO: 向后端发送消息（可加乐观更新）
       },
-      updateSessionTitle: () => {},
+
+      updateSessionTitle: () => {
+        // TODO: 本地 title 更新
+      },
     }),
-    { name: "suda_sessions" },
+    {
+      name: "chat_user",
+      partialize: (state) => ({
+        userId: state.userId,
+        currentSessionId: state.currentSessionId,
+      }),
+    },
   ),
 );

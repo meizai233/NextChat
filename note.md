@@ -5,22 +5,31 @@
   是否使用了 Server-Sent Events 或 WebSockets？
   如何在 UI 中平滑地显示流式文本？ 会涉及到哪些方面
 
-### 关于 shadcn
+### zustand
 
-- 为什么要选它？
-  - 引入的组件是完全可读可修改的 定制化高
-  - antd 的一个组件类似命令式 只需要给他一些属性 样式、动画、交互她全部包括了。shadcn 只包含最基本的交互功能+一点点 css，剩下的自己扩展即可
-  - antd 需要 npm install，全部下载一大坨；shadcn 是直接把单个组件放到代码里面
+- [ ] 为每个请求创建一个store 参考：https://zustand.docs.pmnd.rs/guides/nextjs
+-
 
-### zustand管理
+### 可以深入的点
 
-- 前端管理多个chat chat可以新增和删除 一个chat的上下文没有
+- 哪些场景可以用到渐进式增强
 
-### 关于server actions
+- 对服务端渲染的细节 特别是 react 服务器组件 还是不够了解111
+- useContext 和 useReducer 的区别 为什么需要有状态管理哭 而非 useContext 呢111
+- 如何在浏览器中观察到 rsc 的传输和交互
+- 流式传输是啥，如何应用实践
 
-- 使用场景：客户端调用服务器上的函数
-- 相当于暴露了一个公开接口 await fetch('http://your-site.com/app/xxx/actions.ts/deleteSession', {
-  method: 'POST',
-  body: JSON.stringify({ id: '123' })
-  }); 被公开访问，这很危险，使用前需要校验
-- next实现 其实就是把fetch api -> 路由导航 -> 函数调用 -> 返回结果 这一系列自动化了。主要是让开发更容易
+- 在 nextjs 中，他们的通信 msg 是 rsc，rsc 需要传递哪些信息？
+
+- 什么情况下用服务端，什么情况下用客户端组件？
+
+  - 客户端：离用户更近，重在交互，可以用 react 自带钩子啊生命周期啊浏览器 api 啊
+  - 服务端，离数据更近，用 use 拿到数据并给到客户端 然后客户端渲染【说得太粗略了】，一些需要保密的信息比如 token，提高 fcp
+  - 举例：一个大组件中的获取数据部分、静态元素、交互部分，交互部分标记 use client，其他部分标记服务端【next 底部是如何进行拆分的】
+
+- 部分预渲染这个策略怎么手撸一个，脱离 nextjs 机制,prerender 的一些概念可以自己来实现，更有可控性
+
+- 如何通过例子深度体验 nextjs 的工作流程（服务器组件和客户端组件）
+  - 服务端和
+
+### 最佳实践：如何搭配使用 RSC 和 Client Components

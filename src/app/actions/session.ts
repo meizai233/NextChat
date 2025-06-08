@@ -5,8 +5,8 @@ import { db } from "@lib/db"; // 数据库连接实例
 import { chatSession } from "@lib/db/schema"; // 你的表定义
 import { eq } from "drizzle-orm";
 
-export async function createSession(title = "新会话") {
-  const session = createChatSessionData(title);
+export async function createSession(userId, title = "新会话") {
+  const session = createChatSessionData(userId, title);
 
   await db.insert(chatSession).values(session);
 
