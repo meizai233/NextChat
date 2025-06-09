@@ -1,55 +1,60 @@
-// 管理一个chat的通话
 "use client";
-import { useCallback, useEffect, useState } from "react";
-// 待办 能不能自动引入 @xxx
-import ChatWorkspace from "@/ui/ChatWorkspace";
-import HeaderPanel from "@/ui/HeaderPanel";
-import InputPanel from "@/ui/InputPanel";
+import ChatWorkspace from "@/components/ChatWorkspace";
+import InputPanel from "@/components/InputPanel";
 import { useChat } from "@ai-sdk/react";
+import { useState, useCallback } from "react";
+import { useMessages } from "../hooks/useMessages";
+import { useChatStore } from "../store/chat-store";
+import { useInitialMessages } from "../hooks/useInitialMessages";
 
-export default function ChatPage(props) {
-  // const [inputValue, setInputValue] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+export default function Chat() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const currentSessionId = useChatStore((s) => s.currentSessionId);
 
-  // chat相关逻辑
+  // 加载历史消息（如数据库中的）
+  const { messages: historyMessages, isLoading: isHistoryLoading } =
+    useMessages();
+  const initialMessages = useInitialMessages();
   const {
-    error,
+    messages: sessionMessages,
     input,
     setInput,
-    status,
-    handleInputChange,
     handleSubmit,
-    messages,
-    reload,
+    error,
+    status,
     stop,
+    reload,
   } = useChat({
+    id: currentSessionId!,
+    initialMessages, // ✅ 不会每次都变
     onFinish(message, { usage, finishReason }) {
       console.log("Usage", usage);
       console.log("FinishReason", finishReason);
-      setIsLoading(false); // 完成时设置 loading 为 false
+      setIsSubmitting(false);
     },
   });
 
   const handleSendMessage = useCallback(() => {
-    if (!input.trim()) return; // 如果输入为空，不发送
+    if (!input.trim()) return;
 
-    // 发送消息
-    setIsLoading(true);
-    handleSubmit(new Event("submit")); // 触发 useChat 的提交
+    setIsSubmitting(true);
+    handleSubmit(new Event("submit"));
   }, [input]);
 
-  useEffect(() => {
-    console.log("eff", input);
-  }, [input]);
+  // 合并历史和会话消息
+  const allMessages = [...historyMessages, ...sessionMessages];
+
+  if (isHistoryLoading) return <p>加载中...</p>;
 
   return (
     <>
-      <HeaderPanel />
-      <ChatWorkspace messages={messages} />
+      <div className="flex-1 overflow-y-scroll">
+        <ChatWorkspace messages={allMessages} />
+      </div>
       <InputPanel
         value={input}
         onChange={setInput}
-        isLoading={isLoading}
+        isLoading={isSubmitting}
         onSend={handleSendMessage}
       />
     </>

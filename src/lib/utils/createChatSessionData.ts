@@ -1,8 +1,8 @@
 // src/lib/utils/createChatSession.ts
-import { v4 as uuidv4 } from "uuid";
+import { nanoid } from "nanoid";
 
 export function createChatSessionData(userId, title = "新会话") {
-  const id = uuidv4();
+  const id = nanoid();
 
   const now = new Date();
 

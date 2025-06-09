@@ -1,7 +1,16 @@
 -> 先写一个不需要登录的 类似chatbox的页面
 
-1. zustand实现会话管理，以及会话存储到数据库，每次刷新时可以拿到本地的聊天记录，会话管理持久化存储在本地，api key先不管
-2. 实现输入api key的会话管理，调用
+- [x] zustand会话管理 历史记录管理
+- [ ] 聊天历史记录存储
+  - [ ] 无限滚动加载历史消息
+  - [ ] 流式 AI 回复写入数据库
+  - [ ] 分页查询 swr
+- [ ] useSWR考虑渐进式引入
+- [ ] 填入apikey
+- [ ] 消息发送成功后自动刷新
+- [ ] 自动滚动到底部
+- [ ] 错误处理/Loading Skeleton
+- [ ] 手写一个usechat?
 
 openai 的连接实例 以及 openai 的相关方法应该放在全局 zustand 里
 -> get openai 的所有模型列表 并保存在全局状态里
@@ -17,3 +26,21 @@ openai 的连接实例 以及 openai 的相关方法应该放在全局 zustand �
 
 - 拿到本地env的sk key 然后调用对方的模型
 -
+
+后续扩展方向
+
+- [ ] 参考lobechat看下别人做的鲁棒性高的地方（问gpt
+- [ ] 练手方向：带「消息队列 +事务补偿」的 Chat 项目
+      前端：Next.js + SWR/Zustand
+
+后端：Drizzle + PostgreSQL + Redis（存 stream 数据）
+
+核心点：
+
+用户和机器人消息必须成对存入数据库（若失败需补偿）
+
+使用 db.transaction() 包装写入逻辑
+
+接入消息队列（如：BullMQ）异步保存、重试、写入统计信息
+
+- [ ] https://github.com/vercel/commerce 参考下数据一致性啥啥?

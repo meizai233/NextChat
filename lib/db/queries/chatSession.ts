@@ -5,6 +5,7 @@ import { chatSession } from "../schema"; // 表定义
 import { eq } from "drizzle-orm";
 
 // 查询指定 userId 下的所有会话
+// 待办 查询失败怎么办
 export async function getSessionsByUserId(userId: string) {
   const sessions = await db
     .select()
