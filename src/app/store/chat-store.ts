@@ -51,14 +51,14 @@ export const useChatStore = create<ChatStore>()(
         console.log(get().userId, "get().userId");
         if (get().sessions.length === 0) {
           const newSession = await createSession(get().userId);
-          get().setSessions([newSession]);
+          get().setSessions([newSession, ...get().sessions]);
           get().setCurrentSessionId(newSession.id);
         }
       },
 
       createSession: async () => {
         const newSession = await createSession();
-        get().setSessions([newSession]);
+        get().setSessions([newSession, ...get().sessions]);
         get().setCurrentSessionId(newSession.id);
       },
 
