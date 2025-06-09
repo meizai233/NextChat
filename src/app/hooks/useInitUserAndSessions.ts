@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { initAnonymousUser } from "@/app/actions/user";
 import { getUserSessions } from "@/app/actions/session";
-import { useChatStore } from "@store/chat-store";
+import { useChatStore } from "@/app/store/chatStore";
 import { nanoid } from "nanoid";
 
 export function useInitUserAndSessions() {

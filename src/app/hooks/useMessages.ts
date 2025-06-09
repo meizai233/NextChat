@@ -1,5 +1,5 @@
 import useSWR from "swr";
-import { useChatStore } from "@store/chat-store";
+import { useChatStore } from "@/app/store/chatStore";
 import { getMessagesBySessionIdAction } from "../actions/message";
 
 // 用于获取当前会话消息

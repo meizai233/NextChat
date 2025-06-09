@@ -4,7 +4,7 @@ import InputPanel from "@/components/InputPanel";
 import { useChat } from "@ai-sdk/react";
 import { useState, useCallback } from "react";
 import { useMessages } from "../hooks/useMessages";
-import { useChatStore } from "../store/chat-store";
+import { useChatStore } from "../store/chatStore";
 import { useInitialMessages } from "../hooks/useInitialMessages";
 
 export default function Chat() {

@@ -11,7 +11,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { useChatStore } from "@store/chat-store";
+import { useChatStore } from "@/app/store/chatStore";
 import { useCallback } from "react";
 import { IconButton } from "./ui/icon-buttom";
 
