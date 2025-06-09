@@ -14,9 +14,11 @@ type ChatSession = typeof chatSession.$inferInsert;
 type ChatMessage = typeof chatMessage.$inferSelect;
 
 interface ChatStore {
+  _hasHydrated: boolean;
   userId: string | null;
   sessions: ChatSession[];
   currentSessionId: string | null;
+  setHasHydrated: (params) => void;
   setSessions: (sessions: []) => void;
   setUserId: (id: string) => void;
   initializeSessions: () => void;
@@ -31,6 +33,12 @@ interface ChatStore {
 export const useChatStore = create<ChatStore>()(
   persist(
     (set, get) => ({
+      _hasHydrated: false,
+      setHasHydrated: (state) => {
+        set({
+          _hasHydrated: state,
+        });
+      },
       userId: null,
       sessions: [],
       setSessions: (sessions) => set({ sessions }),
@@ -43,22 +51,20 @@ export const useChatStore = create<ChatStore>()(
         console.log(get().userId, "get().userId");
         if (get().sessions.length === 0) {
           const newSession = await createSession(get().userId);
-          set({
-            sessions: [newSession],
-            currentSessionId: newSession.id,
-          });
+          get().setSessions([newSession]);
+          get().setCurrentSessionId(newSession.id);
         }
       },
 
       createSession: async () => {
         const newSession = await createSession();
-        set((state) => ({
-          sessions: [newSession, ...state.sessions],
-          currentSessionId: newSession.id,
-        }));
+        get().setSessions([newSession]);
+        get().setCurrentSessionId(newSession.id);
       },
 
-      setCurrentSessionId: (id: string) => set({ currentSessionId: id }),
+      setCurrentSessionId: (id: string) => {
+        set({ currentSessionId: id });
+      },
 
       deleteSession: async (id: string) => {
         await deleteSessionInDB(id);
@@ -97,6 +103,9 @@ export const useChatStore = create<ChatStore>()(
         userId: state.userId,
         currentSessionId: state.currentSessionId,
       }),
+      onRehydrateStorage: (state) => {
+        return () => state.setHasHydrated(true);
+      },
     },
   ),
 );
