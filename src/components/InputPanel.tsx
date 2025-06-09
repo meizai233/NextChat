@@ -31,7 +31,7 @@ export default function InputPanel({ value, onChange, isLoading, onSend }) {
   }, [isLoading, onSend]);
 
   return (
-    <div className="relative mx-auto flex w-full gap-2 px-4 pb-4 md:max-w-3xl md:pb-6">
+    <div className="relative mx-auto flex w-full gap-2 px-4 pt-4 pb-4 md:max-w-3xl md:pb-6">
       <Textarea
         value={value}
         onChange={handleTextChange}
