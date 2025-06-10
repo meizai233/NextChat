@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import hljs from "highlight.js";
 import "highlight.js/styles/github.css";
 import UserMessage from "./UserMessage";
@@ -11,8 +11,13 @@ export default function ChatWorkspace({ messages }: { messages: any[] }) {
   useEffect(() => {
     hljs.highlightAll();
   }, [messages]);
-
   const chatStatus = useChatStore((s) => s.chatStatus);
+
+  const bottomRef = useRef<HTMLDivElement>(null);
+  // 每次 messages 或 status 变化 → 滚动到底部
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, chatStatus]);
 
   return (
     <div className="flex min-h-[360px] flex-col space-y-4 overflow-y-auto p-4 dark:bg-[#1a1a1a]">
@@ -32,6 +37,9 @@ export default function ChatWorkspace({ messages }: { messages: any[] }) {
           </div>
         </div>
       )}
+
+      {/* 锚点元素：滚动的目标 */}
+      <div ref={bottomRef} />
     </div>
   );
 }
