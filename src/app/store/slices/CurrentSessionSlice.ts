@@ -1,12 +1,13 @@
-import { chatMessage } from "@lib/db/schema";
 import { StateCreator } from "zustand";
 
-type ChatMessage = typeof chatMessage.$inferSelect;
+export type ChatStatus = "idle" | "loading" | "success" | "error";
 
 export interface CurrentSessionSlice {
   currentSessionId: string | null;
   setCurrentSessionId: (id: string) => void;
-  addMessage: (sessionId: string, message: ChatMessage) => void;
+
+  chatStatus: ChatStatus;
+  setChatStatus: (status: ChatStatus) => void;
 }
 
 export const createCurrentSessionSlice: StateCreator<
@@ -17,8 +18,7 @@ export const createCurrentSessionSlice: StateCreator<
 > = (set) => ({
   currentSessionId: null,
   setCurrentSessionId: (id) => set({ currentSessionId: id }),
-  addMessage: (sessionId: string, message: ChatMessage) => {
-    // TODO: 向后端发送消息（可加乐观更新）
-    console.log("Adding message to session", sessionId, message);
-  },
+
+  chatStatus: "idle",
+  setChatStatus: (status) => set({ chatStatus: status }),
 });

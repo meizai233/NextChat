@@ -11,7 +11,7 @@ export default function Chat() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const currentSessionId = useChatStore((s) => s.currentSessionId);
 
-  // 加载历史消息（如数据库中的）
+  const setChatStatus = useChatStore((s) => s.setChatStatus); // 加载历史消息（如数据库中的）
   const { messages: historyMessages, isLoading: isHistoryLoading } =
     useMessages();
   const initialMessages = useInitialMessages();
@@ -30,7 +30,11 @@ export default function Chat() {
     onFinish(message, { usage, finishReason }) {
       console.log("Usage", usage);
       console.log("FinishReason", finishReason);
+      setChatStatus("success");
       setIsSubmitting(false);
+    },
+    onError() {
+      setChatStatus("error");
     },
   });
 
@@ -39,6 +43,7 @@ export default function Chat() {
 
     setIsSubmitting(true);
     handleSubmit(new Event("submit"));
+    setChatStatus("loading");
   }, [input]);
 
   // 合并历史和会话消息
