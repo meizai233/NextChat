@@ -16,6 +16,9 @@ import { useCallback } from "react";
 import { IconButton } from "./ui/icon-buttom";
 
 import { useInitUserAndSessions } from "@/app/hooks/useInitUserAndSessions";
+import { useConfirm } from "./ui/confirm-dialog-provider";
+import { RenameForm } from "@/components/rename-form";
+import { useDialog } from "./ui/dialog-provider";
 
 export function AppSidebar() {
   useInitUserAndSessions();
@@ -26,19 +29,45 @@ export function AppSidebar() {
   const deleteSession = useChatStore((s) => s.deleteSession);
   const renameSession = useChatStore((s) => s.renameSession);
   const setCurrentSessionId = useChatStore((s) => s.setCurrentSessionId);
+  // 实现思路: context comfirmProvider封装一下provider并存放一个action和state，action来修改state
+  // 然后如果有设置state 根据state.open决定dialog的显隐
+  // confirm方法实现: 传入option 并setConfirmState(isOpen为true)
+  // 如果调用了confirm则isOpen显示
+  // 为什么要用promise? 给一个promise 在确认时调用resolve 这是一个暂停等待状态 resolve之后才关闭选项
+  const confirm = useConfirm();
+  const showDialog = useDialog();
 
-  const handleDelete = useCallback((id: string) => {
-    if (confirm("确定要删除该会话吗？")) {
-      deleteSession(id);
-    }
-  }, []);
+  const handleDelete = useCallback(
+    async (id: string) => {
+      const confirmed = await confirm({
+        title: "确认删除",
+        description: "确定要删除该会话吗？",
+        confirmText: "删除",
+        cancelText: "取消",
+      });
+      if (confirmed) {
+        deleteSession(id);
+      }
+    },
+    [confirm],
+  );
 
-  const handleRename = useCallback((id: string, oldTitle: string) => {
-    const newTitle = prompt("请输入新的会话标题", oldTitle);
-    if (newTitle && newTitle.trim()) {
-      renameSession(id, newTitle.trim());
-    }
-  }, []);
+  const handleRename = useCallback(
+    async (id: string, oldTitle: string) => {
+      const result = await showDialog({
+        title: "重命名会话",
+        component: RenameForm,
+        props: {
+          initialValue: oldTitle,
+        },
+      });
+
+      if (result?.newTitle) {
+        renameSession(id, result.newTitle);
+      }
+    },
+    [showDialog],
+  );
 
   return (
     <Sidebar>
