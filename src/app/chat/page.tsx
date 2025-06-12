@@ -10,9 +10,10 @@ import { useInitialMessages } from "../hooks/useInitialMessages";
 export default function Chat() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const currentSessionId = useChatStore((s) => s.currentSessionId);
+  const setErrorMessage = useChatStore((s) => s.setErrorMessage);
   const config = useChatStore((s) => s.config);
+  const setChatStatus = useChatStore((s) => s.setChatStatus);
 
-  const setChatStatus = useChatStore((s) => s.setChatStatus); // 加载历史消息（如数据库中的）
   const { messages: historyMessages, isLoading: isHistoryLoading } =
     useMessages();
   const initialMessages = useInitialMessages();
@@ -32,13 +33,31 @@ export default function Chat() {
       config, // 传递配置到 API
     },
     onFinish(message, { usage, finishReason }) {
-      console.log("Usage", usage);
-      console.log("FinishReason", finishReason);
-      setChatStatus("success");
-      setIsSubmitting(false);
+      if (finishReason === "unknown") {
+        setChatStatus("error");
+        setErrorMessage("⚠️ AI 回复异常：finishReason 为 unknown");
+      } else {
+        setChatStatus("success");
+        setErrorMessage(null);
+      }
     },
-    onError() {
+    onError(error) {
+      let message = "发生未知错误";
+
+      if (typeof error === "string") {
+        message = error;
+      } else if (error instanceof Error) {
+        message = error.message;
+      } else if (
+        typeof error === "object" &&
+        error !== null &&
+        "message" in error
+      ) {
+        message = (error as any).message;
+      }
+
       setChatStatus("error");
+      setErrorMessage(message);
     },
   });
 

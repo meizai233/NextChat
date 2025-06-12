@@ -1,30 +1,37 @@
-// components/ui/icon-button.tsx
 import { cn } from "@/lib/utils";
 import { LucideIcon } from "lucide-react";
 import React from "react";
 
-interface IconButtonProps extends React.HTMLAttributes<HTMLDivElement> {
-  icon: LucideIcon;
+interface IconButtonProps
+  extends React.HTMLAttributes<HTMLDivElement | HTMLButtonElement> {
+  icon?: LucideIcon;
   variant?: "default" | "ghost" | "primary";
   size?: "sm" | "md" | "lg";
   strokeWidth?: number;
-  asButton?: boolean; // 新增属性来控制是否渲染为 button
+  asButton?: boolean;
+  disabled?: boolean;
+  onClick?: React.MouseEventHandler<HTMLDivElement | HTMLButtonElement>;
+  children?: React.ReactNode; // 新增 children 支持
 }
 
 export const IconButton = React.forwardRef<
   HTMLDivElement | HTMLButtonElement,
   IconButtonProps
 >(
-  ({ 
-    icon: Icon, 
-    variant = "default", 
-    size = "md",
-    strokeWidth = 2,
-    className,
-    asButton = false, // 默认渲染为 div
-    ...props 
-  }, 
-  ref
+  (
+    {
+      icon: Icon,
+      variant = "default",
+      size = "md",
+      strokeWidth = 2,
+      className,
+      asButton = false,
+      disabled = false,
+      onClick,
+      children,
+      ...props
+    },
+    ref,
   ) => {
     const sizeMap = {
       sm: 16,
@@ -38,24 +45,39 @@ export const IconButton = React.forwardRef<
       primary: "text-muted-foreground hover:text-primary",
     };
 
-    const Component = asButton ? 'button' : 'div';
+    const Component = asButton ? "button" : "div";
+
+    const handleClick: React.MouseEventHandler<
+      HTMLDivElement | HTMLButtonElement
+    > = (e) => {
+      if (disabled) {
+        e.preventDefault();
+        e.stopPropagation();
+        return;
+      }
+      onClick?.(e);
+    };
 
     return (
       <Component
         ref={ref as any}
         className={cn(
-          "rounded-md p-1.5",
-          "transition-colors",
-          "cursor-pointer",
+          "cursor-pointer rounded-md p-1.5 transition-colors",
           variantStyles[variant],
-          className
+          disabled
+            ? "hover:text-muted-foreground cursor-not-allowed opacity-50 hover:bg-transparent"
+            : "",
+          className,
         )}
+        onClick={handleClick}
+        disabled={asButton ? disabled : undefined}
         {...props}
       >
-        <Icon size={sizeMap[size]} strokeWidth={strokeWidth} />
+        {children ??
+          (Icon && <Icon size={sizeMap[size]} strokeWidth={strokeWidth} />)}
       </Component>
-    )
-  }
+    );
+  },
 );
 
 IconButton.displayName = "IconButton";

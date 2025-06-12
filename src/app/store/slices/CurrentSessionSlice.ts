@@ -8,8 +8,10 @@ export interface CurrentSessionSlice {
 
   chatStatus: ChatStatus;
   setChatStatus: (status: ChatStatus) => void;
-}
 
+  errorMessage: string | null; // 新增字段
+  setErrorMessage: (message: string | null) => void; // 新增函数
+}
 export const createCurrentSessionSlice: StateCreator<
   CurrentSessionSlice,
   [],
@@ -21,4 +23,7 @@ export const createCurrentSessionSlice: StateCreator<
 
   chatStatus: "idle",
   setChatStatus: (status) => set({ chatStatus: status }),
+
+  errorMessage: null,
+  setErrorMessage: (message) => set({ errorMessage: message }),
 });

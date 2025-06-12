@@ -8,7 +8,7 @@
 ### zustand
 
 - [ ] 为每个请求创建一个store 参考：https://zustand.docs.pmnd.rs/guides/nextjs
--
+- 切片 考虑到很深的组件嵌套 props深层嵌套之类的 直接useStore
 
 ### 可以深入的点
 
