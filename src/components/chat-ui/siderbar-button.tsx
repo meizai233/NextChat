@@ -12,6 +12,8 @@ interface SidebarButtonProps
   onDelete?: (e: React.MouseEvent) => void;
   iconSize?: number;
   asChild?: boolean;
+  hideActions?: boolean;
+  justify?: "between" | "center";
 }
 
 export const SidebarButton = React.forwardRef<
@@ -28,6 +30,8 @@ export const SidebarButton = React.forwardRef<
       className,
       iconSize = 16,
       asChild = true,
+      hideActions = false,
+      justify = "between",
       ...props
     },
     ref,
@@ -50,8 +54,18 @@ export const SidebarButton = React.forwardRef<
         )}
         {...props}
       >
-        <div className="flex w-full items-center justify-between">
-          <div className="flex items-center gap-2 overflow-hidden">
+        <div
+          className={cn(
+            "flex w-full items-center",
+            justify === "center" ? "justify-center" : "justify-between",
+          )}
+        >
+          <div
+            className={cn(
+              "flex items-center gap-2 overflow-hidden",
+              justify === "center" && "justify-center",
+            )}
+          >
             {Icon && (
               <Icon
                 size={iconSize}
@@ -66,32 +80,34 @@ export const SidebarButton = React.forwardRef<
             {label && <span className="truncate">{label}</span>}
           </div>
 
-          <div className="flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
-            {onRename && (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onRename(e);
-                }}
-                className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-md p-1 transition-colors"
-                type="button"
-              >
-                <Pencil size={16} />
-              </button>
-            )}
-            {onDelete && (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onDelete(e);
-                }}
-                className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-md p-1 transition-colors"
-                type="button"
-              >
-                <Trash size={16} />
-              </button>
-            )}
-          </div>
+          {!hideActions && (onRename || onDelete) && (
+            <div className="flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+              {onRename && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onRename(e);
+                  }}
+                  className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-md p-1 transition-colors"
+                  type="button"
+                >
+                  <Pencil size={16} />
+                </button>
+              )}
+              {onDelete && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDelete(e);
+                  }}
+                  className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-md p-1 transition-colors"
+                  type="button"
+                >
+                  <Trash size={16} />
+                </button>
+              )}
+            </div>
+          )}
         </div>
       </Component>
     );

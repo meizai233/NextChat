@@ -1,6 +1,6 @@
 "use client";
 
-import { Inbox, Plus, Sun, Moon } from "lucide-react";
+import { Inbox, Plus, Sun, Moon, Settings } from "lucide-react";
 
 import {
   Sidebar,
@@ -21,6 +21,7 @@ import { RenameForm } from "@/components/rename-form";
 import { useDialog } from "./chat-ui/dialog-provider";
 import { SidebarButton } from "./chat-ui/siderbar-button";
 import { IconButton } from "./ui/icon-buttom";
+import { SettingsForm } from "@/components/settings-form";
 
 import { useTheme } from "next-themes"; // 新增
 
@@ -63,7 +64,7 @@ export function AppSidebar() {
         deleteSession(id);
       }
     },
-    [confirm, deleteSession]
+    [confirm, deleteSession],
   );
 
   const handleRename = useCallback(
@@ -73,6 +74,7 @@ export function AppSidebar() {
         component: RenameForm,
         props: {
           initialValue: oldTitle,
+          onClose: () => {},
         },
       });
 
@@ -80,13 +82,23 @@ export function AppSidebar() {
         renameSession(id, result.newTitle);
       }
     },
-    [showDialog, renameSession]
+    [showDialog, renameSession],
   );
+
+  const handleSettings = useCallback(async () => {
+    await showDialog({
+      title: "设置",
+      component: SettingsForm,
+      props: {
+        onClose: () => {},
+      },
+    });
+  }, [showDialog]);
 
   return (
     <Sidebar>
-      <SidebarContent>
-        <SidebarGroup>
+      <SidebarContent className="flex h-full flex-col">
+        <SidebarGroup className="flex flex-1 flex-col">
           <SidebarGroupLabel className="flex items-center justify-between pr-2">
             <span className="text-base font-semibold">Suda-chat</span>
             <div className="flex items-center gap-2">
@@ -111,8 +123,8 @@ export function AppSidebar() {
             </div>
           </SidebarGroupLabel>
 
-          <SidebarGroupContent>
-            <SidebarMenu>
+          <SidebarGroupContent className="flex flex-1 flex-col">
+            <SidebarMenu className="flex-1">
               {sessions.map((item) => (
                 <SidebarMenuItem key={item.id}>
                   <SidebarButton
@@ -133,6 +145,16 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+
+        <div className="border-border/50 border-t pt-4 pb-4">
+          <SidebarButton
+            icon={Settings}
+            label="设置"
+            onClick={handleSettings}
+            justify="center"
+            hideActions={true}
+          />
+        </div>
       </SidebarContent>
     </Sidebar>
   );

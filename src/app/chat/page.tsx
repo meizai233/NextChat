@@ -57,7 +57,7 @@ export default function Chat() {
         <ChatWorkspace messages={allMessages} />
       </div>
       <InputPanel
-         value={input}
+        value={input}
         onChange={setInput}
         isLoading={isSubmitting}
         onSend={handleSendMessage}
