@@ -20,7 +20,7 @@ export default function ChatWorkspace({ messages }: { messages: any[] }) {
   }, [messages, chatStatus]);
 
   return (
-    <div className="flex min-h-[360px] flex-col space-y-4 overflow-y-auto p-4 dark:bg-[#1a1a1a]">
+    <div className="flex min-h-[360px] flex-col space-y-4 overflow-y-auto p-4  ">
       {messages.map((message) =>
         message.role === "user" ? (
           <UserMessage key={message.id} content={message.content} />
@@ -32,7 +32,7 @@ export default function ChatWorkspace({ messages }: { messages: any[] }) {
       {/* loading 气泡：只显示在 assistant 回复还没回来时 */}
       {chatStatus === "loading" && (
         <div className="flex justify-start">
-          <div className="max-w-[75%] px-4 py-3 dark:bg-[#2a2a2a]">
+          <div className="max-w-[75%] px-4 py-3 ">
             <DotPulse size={40} speed={1.3} color="black" />
           </div>
         </div>

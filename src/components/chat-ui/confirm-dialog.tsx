@@ -1,4 +1,4 @@
-// components/ui/confirm-dialog.tsx
+'use  client'
 import {
   AlertDialog,
   AlertDialogAction,

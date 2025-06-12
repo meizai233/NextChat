@@ -1,5 +1,6 @@
 "use client";
-import { Inbox, Pencil, Plus, Trash } from "lucide-react";
+
+import { Inbox, Plus, Sun, Moon } from "lucide-react";
 
 import {
   Sidebar,
@@ -8,17 +9,20 @@ import {
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+
 import { useChatStore } from "@/app/store/chatStore";
-import { useCallback } from "react";
-import { IconButton } from "./ui/icon-buttom";
+import { useCallback, useState, useEffect } from "react";
 
 import { useInitUserAndSessions } from "@/app/hooks/useInitUserAndSessions";
-import { useConfirm } from "./ui/confirm-dialog-provider";
+import { useConfirm } from "./chat-ui/confirm-dialog-provider";
 import { RenameForm } from "@/components/rename-form";
-import { useDialog } from "./ui/dialog-provider";
+import { useDialog } from "./chat-ui/dialog-provider";
+import { SidebarButton } from "./chat-ui/siderbar-button";
+import { IconButton } from "./ui/icon-buttom";
+
+import { useTheme } from "next-themes"; // 新增
 
 export function AppSidebar() {
   useInitUserAndSessions();
@@ -29,13 +33,23 @@ export function AppSidebar() {
   const deleteSession = useChatStore((s) => s.deleteSession);
   const renameSession = useChatStore((s) => s.renameSession);
   const setCurrentSessionId = useChatStore((s) => s.setCurrentSessionId);
-  // 实现思路: context comfirmProvider封装一下provider并存放一个action和state，action来修改state
-  // 然后如果有设置state 根据state.open决定dialog的显隐
-  // confirm方法实现: 传入option 并setConfirmState(isOpen为true)
-  // 如果调用了confirm则isOpen显示
-  // 为什么要用promise? 给一个promise 在确认时调用resolve 这是一个暂停等待状态 resolve之后才关闭选项
+
   const confirm = useConfirm();
   const showDialog = useDialog();
+
+  // next-themes 主题切换相关
+  const { theme, setTheme, resolvedTheme } = useTheme();
+  // resolvedTheme 是当前主题（考虑系统优先级）
+
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const toggleTheme = () => {
+    if (!mounted) return;
+    setTheme(resolvedTheme === "light" ? "dark" : "light");
+  };
 
   const handleDelete = useCallback(
     async (id: string) => {
@@ -49,7 +63,7 @@ export function AppSidebar() {
         deleteSession(id);
       }
     },
-    [confirm],
+    [confirm, deleteSession]
   );
 
   const handleRename = useCallback(
@@ -66,7 +80,7 @@ export function AppSidebar() {
         renameSession(id, result.newTitle);
       }
     },
-    [showDialog],
+    [showDialog, renameSession]
   );
 
   return (
@@ -75,48 +89,45 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupLabel className="flex items-center justify-between pr-2">
             <span className="text-base font-semibold">Suda-chat</span>
-            <button
-              onClick={createSession}
-              className="text-muted-foreground hover:text-primary cursor-pointer p-1.5 transition-colors"
-            >
-              <Plus size={20} strokeWidth={2.2} />
-            </button>
+            <div className="flex items-center gap-2">
+              {/* 新增切换主题按钮 */}
+              <IconButton
+                icon={mounted && resolvedTheme === "light" ? Moon : Sun}
+                variant="ghost"
+                size="md"
+                strokeWidth={2.2}
+                onClick={toggleTheme}
+                aria-label="切换主题"
+              />
+              {/* 新增创建会话按钮 */}
+              <IconButton
+                icon={Plus}
+                variant="primary"
+                size="md"
+                strokeWidth={2.2}
+                onClick={createSession}
+                aria-label="新建会话"
+              />
+            </div>
           </SidebarGroupLabel>
+
           <SidebarGroupContent>
             <SidebarMenu>
               {sessions.map((item) => (
                 <SidebarMenuItem key={item.id}>
-                  <SidebarMenuButton
-                    isActive={item.id === currentSessionId}
-                    asChild
-                  >
-                    <div
-                      onClick={() => setCurrentSessionId(item.id)}
-                      className="group flex w-full cursor-pointer items-center justify-between px-2 py-1"
-                    >
-                      <div className="flex items-center gap-2 overflow-hidden">
-                        <Inbox size={16} />
-                        <span className="truncate">{item.title}</span>
-                      </div>
-
-                      <div className="flex gap-1 opacity-0 group-hover:opacity-100">
-                        <IconButton
-                          icon={Pencil}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleRename(item.id, item.title);
-                          }}
-                        />
-                        <IconButton
-                          icon={Trash}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDelete(item.id);
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </SidebarMenuButton>
+                  <SidebarButton
+                    key={item.id}
+                    icon={Inbox}
+                    label={item.title}
+                    active={item.id === currentSessionId}
+                    onClick={() => setCurrentSessionId(item.id)}
+                    onRename={(e) => {
+                      handleRename(item.id, item.title);
+                    }}
+                    onDelete={(e) => {
+                      handleDelete(item.id);
+                    }}
+                  />
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
