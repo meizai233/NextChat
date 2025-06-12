@@ -4,20 +4,20 @@ import { chatMessage } from "@lib/db/schema";
 import { streamText } from "ai";
 import { nanoid } from "nanoid";
 
-// 创建 OpenAI 实例
-const openai = createOpenAI({
-  apiKey: process.env.OPENAI_API_KEY!,
-  baseURL: process.env.OPENAI_BASE_URL, // 你的代理 URL
-});
-
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
-  // Extract the `messages` from the body of the request
-  const { messages, id: chatSessionId } = await req.json();
+  // Extract the `messages` and config from the body of the request
+  const { messages, id: chatSessionId, config } = await req.json();
 
   const userMessage = messages[messages.length - 1]; // 用户发的最后一条消息
+  console.log(config, "configggg");
+  // 使用用户配置创建 OpenAI 实例
+  const openai = createOpenAI({
+    apiKey: config.openaiApiKey || process.env.OPENAI_API_KEY!, // 如果用户没有提供，使用环境变量
+    baseURL: config.openaiEndpoint || process.env.OPENAI_BASE_URL,
+  });
 
   // Call the language model
   // 待办 streamText是啥呢

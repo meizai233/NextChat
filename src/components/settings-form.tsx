@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useChatStore } from "@/app/store/chatStore";
 
 interface SettingsFormProps {
   onClose: () => void;
@@ -17,11 +18,16 @@ export function SettingsForm({ onClose }: SettingsFormProps) {
     openaiApiKey: "",
   });
 
+  const setConfig = useChatStore((state) => state.setConfig);
+
   const [showApiKey, setShowApiKey] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: 保存设置
+    setConfig({
+      openaiEndpoint: formData.openaiEndpoint,
+      openaiApiKey: formData.openaiApiKey,
+    });
     onClose();
   };
 

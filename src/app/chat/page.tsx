@@ -10,6 +10,7 @@ import { useInitialMessages } from "../hooks/useInitialMessages";
 export default function Chat() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const currentSessionId = useChatStore((s) => s.currentSessionId);
+  const config = useChatStore((s) => s.config);
 
   const setChatStatus = useChatStore((s) => s.setChatStatus); // 加载历史消息（如数据库中的）
   const { messages: historyMessages, isLoading: isHistoryLoading } =
@@ -27,6 +28,9 @@ export default function Chat() {
   } = useChat({
     id: currentSessionId!,
     initialMessages, // ✅ 不会每次都变
+    body: {
+      config, // 传递配置到 API
+    },
     onFinish(message, { usage, finishReason }) {
       console.log("Usage", usage);
       console.log("FinishReason", finishReason);
