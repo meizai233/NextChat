@@ -1,34 +1,29 @@
-import { Suspense } from "react";
+"use client";
 
-const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+import { Suspense, useState, lazy } from "react";
 
-async function PostFeed() {
-  await sleep(2000);
-  return <h1>Hello PostFeed</h1>;
-}
+// 懒加载组件，只有真正渲染时才会触发 import()
+const LazyComponent = lazy(() => import("./LazyComponent"));
 
-async function Weather() {
-  await sleep(8000);
-  return <h1>Hello Weather</h1>;
-}
+export default function App() {
+  const [show, setShow] = useState(false);
 
-async function Recommend() {
-  await sleep(5000);
-  return <h1>Hello Recommend</h1>;
-}
-
-export default function Dashboard() {
   return (
-    <section style={{ padding: "20px" }}>
-      <Suspense fallback={<p>Loading PostFeed Component</p>}>
-        <PostFeed />
-      </Suspense>
-      <Suspense fallback={<p>Loading Weather Component</p>}>
-        <Weather />
-      </Suspense>
-      <Suspense fallback={<p>Loading Recommend Component</p>}>
-        <Recommend />
-      </Suspense>
-    </section>
+    <div style={{ padding: 20 }}>
+      <h1>🧪 Suspense + lazy Demo</h1>
+
+      <button
+        onClick={() => setShow(true)}
+        style={{ marginBottom: 20, padding: "8px 16px" }}
+      >
+        加载懒加载组件
+      </button>
+
+      {show && (
+        <Suspense fallback={<p>⏳ 加载中...</p>}>
+          <LazyComponent />
+        </Suspense>
+      )}
+    </div>
   );
 }
