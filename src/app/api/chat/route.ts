@@ -15,8 +15,8 @@ export async function POST(req: Request) {
   console.log(config, "configggg");
   // 使用用户配置创建 OpenAI 实例
   const openai = createOpenAI({
-    apiKey: config.openaiApiKey || process.env.OPENAI_API_KEY!, // 如果用户没有提供，使用环境变量
-    baseURL: config.openaiEndpoint || process.env.OPENAI_BASE_URL,
+    apiKey: config?.openaiApiKey || process.env.OPENAI_API_KEY!, // 如果用户没有提供，使用环境变量
+    baseURL: config?.openaiEndpoint || process.env.OPENAI_BASE_URL,
   });
 
   // Call the language model
