@@ -2,7 +2,7 @@
 import ChatWorkspace from "@/components/ChatWorkspace";
 import InputPanel from "@/components/InputPanel";
 import { useChat } from "@ai-sdk/react";
-import { useState, useCallback } from "react";
+import { useState, useCallback, Suspense } from "react";
 import { useMessages } from "../hooks/useMessages";
 import { useChatStore } from "../store/chatStore";
 import { useInitialMessages } from "../hooks/useInitialMessages";
@@ -14,8 +14,7 @@ export default function Chat() {
   const config = useChatStore((s) => s.config);
   const setChatStatus = useChatStore((s) => s.setChatStatus);
 
-  const { messages: historyMessages, isLoading: isHistoryLoading } =
-    useMessages();
+  const { messages: historyMessages, mutate: updateMessages } = useMessages();
   const initialMessages = useInitialMessages();
   const {
     messages: sessionMessages,
@@ -28,17 +27,20 @@ export default function Chat() {
     reload,
   } = useChat({
     id: currentSessionId!,
-    initialMessages, // ✅ 不会每次都变
+    initialMessages,
     body: {
       config, // 传递配置到 API
     },
     onFinish(message, { usage, finishReason }) {
+      console.log("sessionMessages", sessionMessages);
+      console.log("message", message);
       if (finishReason === "unknown") {
         setChatStatus("error");
         setErrorMessage("⚠️ AI 回复异常：finishReason 为 unknown");
       } else {
         setChatStatus("success");
         setErrorMessage(null);
+        updateMessages([...historyMessages, ...sessionMessages], false);
       }
     },
     onError(error) {
@@ -69,15 +71,12 @@ export default function Chat() {
     setChatStatus("loading");
   }, [input]);
 
-  // 合并历史和会话消息
-  const allMessages = [...historyMessages, ...sessionMessages];
-
-  if (isHistoryLoading) return <p>加载中...</p>;
-
   return (
     <>
       <div className="flex-1 overflow-y-scroll">
-        <ChatWorkspace messages={allMessages} />
+        <Suspense fallback={<p>Loading...</p>}>
+          <ChatWorkspace messages={historyMessages} />
+        </Suspense>
       </div>
       <InputPanel
         value={input}

@@ -1,86 +1,72 @@
-import { StateCreator } from "zustand";
-import { nanoid } from "nanoid";
-import { ChatMessagesSlice, Message } from "../types/chat";
-import { StoreState } from "../types/store"; // 假设你有一个合并所有切片类型的接口
+// lib/useSWRWithSuspense.js
+import { useEffect, useState } from "react";
 
-export const createChatMessagesSlice: StateCreator<
-  StoreState,
-  [],
-  [],
-  ChatMessagesSlice
-> = (set, get) => ({
-  messages: {},
-  loadingStates: {},
+const cache = new Map();
+const promiseCache = new Map();
+const subscribers = new Map();
 
-  setMessages: (sessionId, messages) =>
-    set((state) => ({
-      messages: {
-        ...state.messages,
-        [sessionId]: messages,
-      },
-    })),
+function notify(key) {
+  const subs = subscribers.get(key) || new Set();
+  subs.forEach((fn) => fn());
+}
 
-  setLoading: (sessionId, isLoading) =>
-    set((state) => ({
-      loadingStates: {
-        ...state.loadingStates,
-        [sessionId]: isLoading,
-      },
-    })),
+export function mutate(key, newData) {
+  cache.set(key, newData);
+  notify(key);
+}
 
-  sendMessage: async (sessionId, content) => {
-    // 1. 添加用户消息
-    const userMessage: Message = {
-      id: nanoid(),
-      content,
-      isUser: true,
-      timestamp: Date.now(),
-    };
+export function useSWRWithSuspense(key, fetcher) {
+  // 1. 找cache
+  // 2. 找promiseCache，若有值 则抛出；没有值，则fetch
+  // 2.1 有值，如果pending则suspense接住
+  // 2.2 fetch.then后 cache.set 并通知所有订阅的组件更新
 
-    set((state) => ({
-      messages: {
-        ...state.messages,
-        [sessionId]: [...(state.messages[sessionId] || []), userMessage],
-      },
-    }));
+  const cachedData = cache.get(key);
 
-    // 2. 设置加载状态
-    get().setLoading(sessionId, true);
+  if (cachedData === undefined) {
+    let promise = promiseCache.get(key);
 
-    try {
-      // 3. 调用API获取回复
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          sessionId,
-          message: content,
-          userId: get().userId, // 从其他切片获取用户ID
-        }),
+    if (!promise) {
+      promise = fetcher(key).then((res) => {
+        cache.set(key, res);
+        promiseCache.delete(key);
+        notify(key);
+        return res;
       });
-
-      const data = await response.json();
-
-      // 4. 添加AI回复
-      const aiMessage: Message = {
-        id: nanoid(),
-        content: data.reply,
-        isUser: false,
-        timestamp: Date.now(),
-      };
-
-      set((state) => ({
-        messages: {
-          ...state.messages,
-          [sessionId]: [...(state.messages[sessionId] || []), aiMessage],
-        },
-      }));
-    } catch (error) {
-      console.error("Failed to send message:", error);
-      // 可以添加错误处理逻辑
-    } finally {
-      // 5. 清除加载状态
-      get().setLoading(sessionId, false);
+      promiseCache.set(key, promise);
     }
-  },
-});
+
+    // 重点：抛出 Promise 触发 Suspense fallback
+    throw promise;
+  }
+
+  const [data, setData] = useState(cachedData);
+
+  useEffect(() => {
+    const update = () => setData(cache.get(key));
+    if (!subscribers.has(key)) {
+      subscribers.set(key, new Set());
+    }
+    subscribers.get(key).add(update);
+
+    return () => {
+      subscribers.get(key).delete(update);
+    };
+  }, [key]);
+
+  const revalidate = () => {
+    const p = fetcher(key).then((res) => {
+      cache.set(key, res);
+      notify(key);
+      return res;
+    });
+    promiseCache.set(key, p);
+    return p;
+  };
+
+  return {
+    data,
+    mutate: (d) => mutate(key, d),
+    revalidate,
+  };
+}

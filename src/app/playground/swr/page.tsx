@@ -1,17 +1,24 @@
-// pages/index.js
+// app/page.tsx (or page.jsx)
 "use client";
 
-import { useSWR } from "./useSWR";
+import { Suspense } from "react";
+import { useSWRWithSuspense } from "./useSWR";
 
-function fetcher(url) {
-  return fetch(url).then((res) => res.json());
+function fetchUser() {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve({ name: "Wan Yan" }), 1500);
+  });
 }
 
-export default function Home() {
-  const { data, error } = useSWR("/api/swr", fetcher, { suspense: false });
+function Profile() {
+  const { data } = useSWRWithSuspense("user", fetchUser);
+  return <h1>My name is {data.name}</h1>;
+}
 
-  if (error) return <div>出错了</div>;
-  if (!data) return <div>加载中...</div>;
-
-  return <div>用户名：{data.name}</div>;
+export default function Page() {
+  return (
+    <Suspense fallback={<p>Loading...</p>}>
+      <Profile />
+    </Suspense>
+  );
 }

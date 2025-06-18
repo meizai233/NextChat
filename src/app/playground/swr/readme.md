@@ -3,6 +3,7 @@
 - [x] 订阅机制：多个组件使用相同 key 时共享更新
 - [ ] revalidate（重新验证）机制：页面 focus 或窗口恢复时自动刷新
 - [ ] suspense 支持（可选）：通过 throw promise 支持 <Suspense> fallback
+- [ ] isLoading确认是否加载完
 - [ ] mutate(key, newData)：手动修改数据并更新视图
 - [ ] revalidate()：重新请求并刷新缓存
 - [ ] 支持 loading、error 状态
