@@ -1,3 +1,4 @@
+"use client";
 import useSWR from "swr";
 import { useChatStore } from "@/app/store/chatStore";
 import { getMessagesBySessionIdAction } from "../actions/message";
