@@ -10,10 +10,8 @@ export default function ChatContainer() {
   const setErrorMessage = useChatStore((s) => s.setErrorMessage);
   const setChatStatus = useChatStore((s) => s.setChatStatus);
   const config = useChatStore((s) => s.config);
-
   const { messages: historyMessages, mutate } = useMessages();
   const initialMessages = useInitialMessages();
-
   const {
     messages: sessionMessages,
     input,

@@ -25,16 +25,14 @@ import { SettingsForm } from "@/components/settings-form";
 
 import { useTheme } from "next-themes"; // 新增
 
-export function AppSidebar() {
+export default function AppSider() {
   useInitUserAndSessions();
-
   const sessions = useChatStore((s) => s.sessions);
   const currentSessionId = useChatStore((s) => s.currentSessionId);
   const createSession = useChatStore((s) => s.createSession);
   const deleteSession = useChatStore((s) => s.deleteSession);
   const renameSession = useChatStore((s) => s.renameSession);
   const setCurrentSessionId = useChatStore((s) => s.setCurrentSessionId);
-
   const confirm = useConfirm();
   const showDialog = useDialog();
 

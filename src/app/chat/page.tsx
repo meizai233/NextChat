@@ -1,5 +1,9 @@
-import InputPanelWrapper from "@/components/InputPanelWrapper";
-import ChatContainer from "@/components/ChatContainer";
+import { ChatPanelSkeleton } from "@/components/chat-ui/ChatPanelSkeleton";
+import dynamic from "next/dynamic";
+
+const ChatContainer = dynamic(() => import("@/components/ChatContainer"), {
+  loading: () => <ChatPanelSkeleton />,
+});
 
 export default function ChatPage() {
   return (
@@ -7,7 +11,6 @@ export default function ChatPage() {
       <div className="flex-1 overflow-y-scroll">
         <ChatContainer />
       </div>
-      <InputPanelWrapper />
     </>
   );
 }
