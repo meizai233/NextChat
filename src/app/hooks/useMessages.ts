@@ -16,6 +16,7 @@ export function useMessages() {
     () => getMessagesBySessionIdAction(currentSessionId!),
     {
       revalidateOnFocus: false,
+      suspense: true,
     },
   );
 
@@ -23,6 +24,6 @@ export function useMessages() {
     messages: messages ?? [],
     isLoading,
     error,
-    refreshMessages: mutate, // 可用于重新拉取
+    mutate, // 可用于重新拉取
   };
 }

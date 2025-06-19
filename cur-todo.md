@@ -17,7 +17,8 @@
   - [x] 新增
   - [x] 错误信息显示
   - [ ] 错误重试
-  - [ ] 骨架屏 乐观更新 react-loading-skeleton (骨架屏效果)
+  - [ ] 骨架屏 配合suspense 实现部分预渲染(sidebar以及chatpage那块)
+  - [ ] 乐观更新 react-loading-skeleton (骨架屏效果)
   - [x] 左下角设置 配置api-key等 本地持久化缓存
   - [ ] 考虑二次封装组件(加上tailwind css 或者仿照)
 - [ ] useSWR考虑渐进式引入
