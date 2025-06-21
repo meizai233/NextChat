@@ -2,7 +2,7 @@
 
 import { RefreshCw, Copy, Trash } from "lucide-react";
 import ChatBubble from "./ChatBubble";
-import { useChatStore } from "@/app/store/chatStore";
+import { useChatStore } from "@/app/providers/chat-store-provider";
 
 export default function ErrorMessage() {
   const errorMessage = useChatStore((s) => s.errorMessage);

@@ -4,7 +4,7 @@ import hljs from "highlight.js";
 import "highlight.js/styles/github.css";
 import UserMessage from "./UserMessage";
 import AIMessage from "./AIMessage";
-import { useChatStore } from "@/app/store/chatStore";
+import { useChatStore } from "@/app/providers/chat-store-provider";
 import { DotPulse } from "@uiball/loaders";
 import ErrorMessage from "./ErrorMessage";
 

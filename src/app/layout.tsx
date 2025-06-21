@@ -1,28 +1,15 @@
-"use client";
-import React, { useEffect } from "react";
+import React from "react";
 import "./globals.css"; // 确保导入全局样式
-import { ConfirmProvider } from "@/components/chat-ui/confirm-dialog-provider";
-import { DialogProvider } from "@/components/chat-ui/dialog-provider";
-import { ThemeProvider } from "@/components/theme-provider";
+import ClientProviders from "./client-providers";
+import { getInitialChatState } from "./store/utils/getInitialChatState";
 
-export function StartupLoaderRemover() {
-  useEffect(() => {
-    const el = document.getElementById("global-loading");
-    if (el) {
-      el.style.transition = "opacity 0.3s";
-      el.style.opacity = "0";
-      setTimeout(() => el.remove(), 300); // 动画后移除
-    }
-  }, []);
-
-  return null;
-}
-
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const initialState = await getInitialChatState();
+
   return (
     <html lang="zh" suppressHydrationWarning>
       <head>
@@ -94,17 +81,9 @@ export default function RootLayout({
             <div className="ai-loader-text">AI 正在思考中...</div>
           </div>
         </div>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <StartupLoaderRemover />
-          <ConfirmProvider>
-            <DialogProvider>{children}</DialogProvider>
-          </ConfirmProvider>
-        </ThemeProvider>
+        <ClientProviders initialState={initialState}>
+          {children}
+        </ClientProviders>
       </body>
     </html>
   );

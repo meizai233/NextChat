@@ -1,9 +1,9 @@
 "use client";
 import { useChat } from "@ai-sdk/react";
 import ChatWorkspace from "@/components/ChatWorkspace";
-import { useInitialMessages } from "@/app/hooks/useInitialMessages";
-import { useMessages } from "@/app/hooks/useMessages";
-import { useChatStore } from "@/app/store/chatStore";
+import { useInitialMessages } from "@/hooks/useInitialMessages";
+import { useMessages } from "@/hooks/useMessages";
+import { useChatStore } from "@/app/providers/chat-store-provider";
 
 export default function ChatContainer() {
   const currentSessionId = useChatStore((s) => s.currentSessionId);

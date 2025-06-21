@@ -2,7 +2,7 @@
 import { useChat } from "@ai-sdk/react";
 import InputPanel from "@/components/InputPanel";
 import { useCallback, useState } from "react";
-import { useChatStore } from "@/app/store/chatStore";
+import { useChatStore } from "@/app/providers/chat-store-provider";
 
 export default function InputPanelWrapper() {
   const setChatStatus = useChatStore((s) => s.setChatStatus);

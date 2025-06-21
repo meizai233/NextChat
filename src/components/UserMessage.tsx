@@ -2,7 +2,7 @@
 "use client";
 
 import { Copy, CheckCheck, Pencil, X, Send } from "lucide-react";
-import { useCopy } from "@/app/hooks/useCopy";
+import { useCopy } from "@/hooks/useCopy";
 import ChatBubble from "./ChatBubble";
 import { useState } from "react";
 import { cn } from "@/lib/utils";

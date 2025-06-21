@@ -12,10 +12,10 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
-import { useChatStore } from "@/app/store/chatStore";
+import { useChatStore } from "@/app/providers/chat-store-provider";
 import { useCallback, useState, useEffect } from "react";
 
-import { useInitUserAndSessions } from "@/app/hooks/useInitUserAndSessions";
+import { useInitUserAndSessions } from "@/hooks/useInitUserAndSessions";
 import { useConfirm } from "./chat-ui/confirm-dialog-provider";
 import { RenameForm } from "@/components/rename-form";
 import { useDialog } from "./chat-ui/dialog-provider";

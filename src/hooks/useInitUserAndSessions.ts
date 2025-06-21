@@ -3,11 +3,10 @@
 import { useEffect } from "react";
 import { initAnonymousUser } from "@/app/actions/user";
 import { getUserSessions } from "@/app/actions/session";
-import { useChatStore } from "@/app/store/chatStore";
+import { useChatStore } from "@/app/providers/chat-store-provider";
 import { nanoid } from "nanoid";
 
 export function useInitUserAndSessions() {
-  const hasHydrated = useChatStore((s) => s._hasHydrated);
   const userId = useChatStore((s) => s.userId);
   const setUserId = useChatStore((s) => s.setUserId);
   const setSessions = useChatStore((s) => s.setSessions); // 你要确保 store 有这个方法
@@ -37,9 +36,5 @@ export function useInitUserAndSessions() {
         console.error("Session 加载失败:", err);
       }
     };
-
-    if (hasHydrated) {
-      init();
-    }
-  }, [hasHydrated]);
+  }, []);
 }

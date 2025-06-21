@@ -1,72 +1,49 @@
-// lib/useSWRWithSuspense.js
-import { useEffect, useState } from "react";
+// src/providers/counter-store-provider.tsx
+"use client";
 
-const cache = new Map();
-const promiseCache = new Map();
-const subscribers = new Map();
+import { type ReactNode, createContext, useRef, useContext } from "react";
+import { useStore } from "zustand";
 
-function notify(key) {
-  const subs = subscribers.get(key) || new Set();
-  subs.forEach((fn) => fn());
+import {
+  type CounterStore,
+  createCounterStore,
+  initCounterStore,
+} from "@/stores/counter-store";
+// 消费 每个客户端组件都初始化创建一次createCounter
+export type CounterStoreApi = ReturnType<typeof createCounterStore>;
+
+// 创建一个ctx
+export const CounterStoreContext = createContext<CounterStoreApi | undefined>(
+  undefined,
+);
+
+export interface CounterStoreProviderProps {
+  children: ReactNode;
 }
-
-export function mutate(key, newData) {
-  cache.set(key, newData);
-  notify(key);
-}
-
-export function useSWRWithSuspense(key, fetcher) {
-  // 1. 找cache
-  // 2. 找promiseCache，若有值 则抛出；没有值，则fetch
-  // 2.1 有值，如果pending则suspense接住
-  // 2.2 fetch.then后 cache.set 并通知所有订阅的组件更新
-
-  const cachedData = cache.get(key);
-
-  if (cachedData === undefined) {
-    let promise = promiseCache.get(key);
-
-    if (!promise) {
-      promise = fetcher(key).then((res) => {
-        cache.set(key, res);
-        promiseCache.delete(key);
-        notify(key);
-        return res;
-      });
-      promiseCache.set(key, promise);
-    }
-
-    // 重点：抛出 Promise 触发 Suspense fallback
-    throw promise;
+// 基于ctx封装一个provider
+export const CounterStoreProvider = ({
+  children,
+}: CounterStoreProviderProps) => {
+  const storeRef = useRef<CounterStoreApi | null>(null);
+  if (storeRef.current === null) {
+    storeRef.current = createCounterStore(initCounterStore());
   }
 
-  const [data, setData] = useState(cachedData);
+  return (
+    <CounterStoreContext.Provider value={storeRef.current}>
+      {children}
+    </CounterStoreContext.Provider>
+  );
+};
+// useXXXStore 这样的情况是不是要把context包在最外面???
+export const useCounterStore = <T,>(
+  selector: (store: CounterStore) => T,
+): T => {
+  const counterStoreContext = useContext(CounterStoreContext);
 
-  useEffect(() => {
-    const update = () => setData(cache.get(key));
-    if (!subscribers.has(key)) {
-      subscribers.set(key, new Set());
-    }
-    subscribers.get(key).add(update);
+  if (!counterStoreContext) {
+    throw new Error(`useCounterStore must be used within CounterStoreProvider`);
+  }
 
-    return () => {
-      subscribers.get(key).delete(update);
-    };
-  }, [key]);
-
-  const revalidate = () => {
-    const p = fetcher(key).then((res) => {
-      cache.set(key, res);
-      notify(key);
-      return res;
-    });
-    promiseCache.set(key, p);
-    return p;
-  };
-
-  return {
-    data,
-    mutate: (d) => mutate(key, d),
-    revalidate,
-  };
-}
+  return useStore(counterStoreContext, selector);
+};

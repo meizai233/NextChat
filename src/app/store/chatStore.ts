@@ -1,41 +1,31 @@
-"use client";
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { createStore } from "zustand/vanilla";
 
 import { SessionsSlice, createSessionsSlice } from "./slices/sessionsSlice";
 import {
   CurrentSessionSlice,
   createCurrentSessionSlice,
+  CurrentSessionSliceInit,
 } from "./slices/CurrentSessionSlice";
-import { HydrationSlice, createHydrationSlice } from "./slices/hydrationSlice";
 import { UserSlice, createUserSlice } from "./slices/userSlice";
 import { ConfigSlice, createConfigSlice } from "./slices/configSlice";
 
-type ChatStore = HydrationSlice &
-  UserSlice &
+export type ChatStore = UserSlice &
   SessionsSlice &
   CurrentSessionSlice &
   ConfigSlice;
 
-export const useChatStore = create<ChatStore>()(
-  persist(
-    (...a) => ({
-      ...createHydrationSlice(...a),
-      ...createUserSlice(...a),
-      ...createSessionsSlice(...a),
-      ...createCurrentSessionSlice(...a),
-      ...createConfigSlice(...a),
-    }),
-    {
-      name: "chat_user",
-      partialize: (state) => ({
-        userId: state.userId,
-        currentSessionId: state.currentSessionId,
-        config: state.config,
-      }),
-      onRehydrateStorage: (state) => {
-        return () => state.setHasHydrated(true);
-      },
-    },
-  ),
-);
+export interface ChatStoreInit {
+  user?: Partial<UserSlice>;
+  currentSession?: CurrentSessionSliceInit;
+}
+
+export const createChatStore = (init?: ChatStoreInit) => {
+  return createStore<ChatStore>()((...a) => ({
+    ...createUserSlice(a[0], a[1], init?.user),
+    ...createSessionsSlice(...a), // 没有 init
+    ...createCurrentSessionSlice(init?.currentSession)(...a),
+    ...createConfigSlice(...a),
+  }));
+};
+
+export type ChatStoreApi = ReturnType<typeof createChatStore>;

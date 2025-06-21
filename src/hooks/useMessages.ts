@@ -1,7 +1,7 @@
 "use client";
 import useSWR from "swr";
-import { useChatStore } from "@/app/store/chatStore";
-import { getMessagesBySessionIdAction } from "../actions/message";
+import { useChatStore } from "@/app/providers/chat-store-provider";
+import { getMessagesBySessionIdAction } from "../app/actions/message";
 
 // 用于获取当前会话消息
 export function useMessages() {

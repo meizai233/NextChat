@@ -1,6 +1,6 @@
 // components/AIMessage.tsx
 import { Copy, CheckCheck } from "lucide-react";
-import { useCopy } from "@/app/hooks/useCopy";
+import { useCopy } from "@/hooks/useCopy";
 import ChatBubble from "./ChatBubble";
 
 export default function AIMessage({ content }: { content: string }) {

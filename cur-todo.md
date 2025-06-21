@@ -1,6 +1,8 @@
 -> 先写一个不需要登录的 类似chatbox的页面
 
 - [x] zustand会话管理 历史记录管理
+- [ ] service-worker值得了解
+- [ ] 精简一下use client
 - [x] 聊天历史记录存储
   - [ ] 无限滚动加载历史消息
   - [x] 流式 AI 回复写入数据库
@@ -28,10 +30,13 @@
 - [ ] 错误处理/Loading Skeleton
 - [ ] 手写一个usechat?
 
-openai 的连接实例 以及 openai 的相关方法应该放在全局 zustand 里
--> get openai 的所有模型列表 并保存在全局状态里
--> 探讨 useContext 的缺点 为什么需要状态管理库 1111
--> chatbot-ui 用 useContext 不会有啥问题吗
+可优化项:
+
+- lobechat看看是如何用zustand进行状态管理的呢 感觉zustand(本地保存状态)和ssr(服务端那边拿状态过来) 不太好统一，因为zustand本地管理状态 本地useStore，服务端那边直接拿到渲染好的状态
+  openai 的连接实例 以及 openai 的相关方法应该放在全局 zustand 里
+  -> get openai 的所有模型列表 并保存在全局状态里
+  -> 探讨 useContext 的缺点 为什么需要状态管理库 1111
+  -> chatbot-ui 用 useContext 不会有啥问题吗
 
 无登陆态 直接输入 api key 的情况：客户端输入 key 然后把 key 给后端服务器 服务器透传到 openai openai 返回 msg msg 返回给客户端
 疑问【1】：每次客户端发消息 都需要发送一遍 key 吗
