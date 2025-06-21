@@ -20,7 +20,7 @@ export default function ChatPage() {
   const initialMessages = useMemo(() => {
     return historyMessages && historyMessages.length > 1
       ? historyMessages
-      : useInitialMessages;
+      : useInitialMessages();
   }, [historyMessages]);
 
   const {
