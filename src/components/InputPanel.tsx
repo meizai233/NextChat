@@ -3,12 +3,18 @@
 import { Textarea } from "@/components/ui/textarea";
 import { Mic, Image, Smile, Send } from "lucide-react";
 import { useCallback } from "react";
+import { useChatStore } from "@/app/providers/chat-store-provider";
 
-export default function InputPanel({ value, onChange, isLoading, onSend }) {
+export default function InputPanel({ value, onChange, onSend }) {
+  const setChatStatus = useChatStore((s) => s.setChatStatus);
+  const chatStatus = useChatStore((s) => s.chatStatus);
+
   const handleKeyDown = useCallback(
     (e: KeyboardEvent<HTMLTextAreaElement>) => {
       if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
+        setChatStatus("loading");
+
         onSend();
       }
     },
@@ -25,10 +31,11 @@ export default function InputPanel({ value, onChange, isLoading, onSend }) {
 
   // 处理发送按钮点击
   const handleSendClick = useCallback(() => {
-    if (!isLoading) {
+    if (chatStatus !== "loading") {
+      setChatStatus("loading");
       onSend();
     }
-  }, [isLoading, onSend]);
+  }, [chatStatus, onSend]);
 
   return (
     <div className="relative mx-auto flex w-full gap-2 px-4 pt-4 pb-4 md:max-w-3xl md:pb-6">

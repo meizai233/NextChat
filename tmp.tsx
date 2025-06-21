@@ -1,29 +1,28 @@
-import { StateCreator } from "zustand";
+"use client";
+import { useChat } from "@ai-sdk/react";
+import InputPanel from "@/components/InputPanel";
+import { useCallback, useState } from "react";
+import { useChatStore } from "@/app/providers/chat-store-provider";
 
-export type ChatStatus = "idle" | "loading" | "success" | "error";
+export default function InputPanelWrapper() {
+  const setChatStatus = useChatStore((s) => s.setChatStatus);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-export interface CurrentSessionSlice {
-  currentSessionId: string | null;
-  setCurrentSessionId: (id: string) => void;
+  const { input, setInput, handleSubmit } = useChat(); // 会自动复用 ChatContainer 中的上下文
 
-  chatStatus: ChatStatus;
-  setChatStatus: (status: ChatStatus) => void;
+  const handleSendMessage = useCallback(() => {
+    if (!input.trim()) return;
+    setIsSubmitting(true);
+    setChatStatus("loading");
+    handleSubmit(new Event("submit"));
+  }, [input]);
 
-  errorMessage: string | null; // 新增字段
-  setErrorMessage: (message: string | null) => void; // 新增函数
+  return (
+    <InputPanel
+      value={input}
+      onChange={setInput}
+      isLoading={isSubmitting}
+      onSend={handleSendMessage}
+    />
+  );
 }
-export const createCurrentSessionSlice: StateCreator<
-  CurrentSessionSlice,
-  [],
-  [],
-  CurrentSessionSlice
-> = (set) => ({
-  currentSessionId: null,
-  setCurrentSessionId: (id) => set({ currentSessionId: id }),
-
-  chatStatus: "idle",
-  setChatStatus: (status) => set({ chatStatus: status }),
-
-  errorMessage: null,
-  setErrorMessage: (message) => set({ errorMessage: message }),
-});

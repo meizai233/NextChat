@@ -1,6 +1,4 @@
 "use client";
-import HeaderPanel from "@/components/HeaderPanel";
-import InputPanelWrapper from "@/components/InputPanelWrapper";
 import { AppSidebarSkeleton } from "@/components/chat-ui/AppSidebarSkeleton";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import dynamic from "next/dynamic";
@@ -14,13 +12,7 @@ export default function ChatLayout({ children }) {
     <div className="flex">
       <SidebarProvider>
         <AppSider />
-        <main className="flex-1">
-          <div className="flex h-dvh w-full min-w-0 flex-col">
-            <HeaderPanel />
-            {children}
-            <InputPanelWrapper />
-          </div>
-        </main>
+        <main className="flex-1">{children}</main>
       </SidebarProvider>
     </div>
   );
