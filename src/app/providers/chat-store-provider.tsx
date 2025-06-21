@@ -3,6 +3,7 @@
 import { ReactNode, createContext, useContext, useRef } from "react";
 import { ChatStore, ChatStoreApi, createChatStore } from "../store/chatStore";
 import { useStore } from "zustand";
+import { mergeInitialState } from "@/utils/mergeInitialState";
 
 // 创建ctx
 export const ChatStoreContext = createContext<ChatStoreApi | undefined>(
@@ -23,7 +24,8 @@ export const ChatStoreProvider = ({
   const storeRef = useRef<ChatStoreApi | null>(null);
   // 只创建一次 store
   if (storeRef.current === null) {
-    storeRef.current = createChatStore(initialState);
+    const mergedState = mergeInitialState(initialState ?? {});
+    storeRef.current = createChatStore(mergedState);
   }
 
   return (

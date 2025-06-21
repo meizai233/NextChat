@@ -4,9 +4,10 @@ import { useChat } from "@ai-sdk/react";
 import { useChatStore } from "@/app/providers/chat-store-provider";
 import HeaderPanel from "@/components/HeaderPanel";
 import ChatWorkspace from "@/components/ChatWorkspace";
-import InputPanelWrapper from "@/components/InputPanelWrapper";
+import InputPanel from "@/components/InputPanel";
 import { useMessages } from "@/hooks/useMessages";
 import { useInitialMessages } from "@/hooks/useInitialMessages";
+import { useMemo } from "react";
 
 export default function ChatPage() {
   const currentSessionId = useChatStore((s) => s.currentSessionId);
@@ -15,7 +16,12 @@ export default function ChatPage() {
   const config = useChatStore((s) => s.config);
 
   const { messages: historyMessages, mutate } = useMessages();
-  const initialMessages = useInitialMessages();
+
+  const initialMessages = useMemo(() => {
+    return historyMessages && historyMessages.length > 1
+      ? historyMessages
+      : useInitialMessages;
+  }, [historyMessages]);
 
   const {
     messages: sessionMessages,
@@ -26,6 +32,9 @@ export default function ChatPage() {
     id: currentSessionId!,
     initialMessages,
     body: { config },
+    onResponse() {
+      setChatStatus("restoring");
+    },
     onFinish(_, { finishReason }) {
       if (finishReason === "unknown") {
         setChatStatus("error");
@@ -33,7 +42,6 @@ export default function ChatPage() {
       } else {
         setChatStatus("success");
         setErrorMessage(null);
-        mutate([...historyMessages, ...sessionMessages], false); // 合并新消息
       }
     },
     onError(error) {
@@ -45,12 +53,8 @@ export default function ChatPage() {
   return (
     <div className="flex h-dvh w-full min-w-0 flex-col">
       <HeaderPanel />
-      <ChatWorkspace messages={historyMessages} />
-      <InputPanelWrapper
-        input={input}
-        setInput={setInput}
-        handleSubmit={handleSubmit}
-      />
+      <ChatWorkspace messages={[...sessionMessages]} />
+      <InputPanel value={input} onChange={setInput} onSend={handleSubmit} />
     </div>
   );
 }

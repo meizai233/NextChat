@@ -7,7 +7,8 @@ import AIMessage from "./AIMessage";
 import { useChatStore } from "@/app/providers/chat-store-provider";
 import { DotPulse } from "@uiball/loaders";
 import ErrorMessage from "./ErrorMessage";
-
+// todo 你是一个助手应该显示在最开始 而且应该加个判断
+// todo key重复问题
 export default function ChatWorkspace({ messages }: { messages: any[] }) {
   useEffect(() => {
     hljs.highlightAll();

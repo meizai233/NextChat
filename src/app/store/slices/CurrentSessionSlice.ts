@@ -1,7 +1,7 @@
 import { StateCreator } from "zustand";
 import Cookies from "js-cookie"; // 安装：npm install js-cookie
 
-export type ChatStatus = "idle" | "loading" | "success" | "error";
+export type ChatStatus = "idle" | "loading" | "success" | "error" | "restoring";
 
 export interface CurrentSessionSlice {
   currentSessionId: string | null;

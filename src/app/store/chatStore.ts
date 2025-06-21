@@ -17,6 +17,7 @@ export type ChatStore = UserSlice &
 export interface ChatStoreInit {
   user?: Partial<UserSlice>;
   currentSession?: CurrentSessionSliceInit;
+  config?: Partial<ConfigSlice>;
 }
 
 export const createChatStore = (init?: ChatStoreInit) => {
@@ -24,7 +25,7 @@ export const createChatStore = (init?: ChatStoreInit) => {
     ...createUserSlice(a[0], a[1], init?.user), //这里可以重构一下高阶函数
     ...createSessionsSlice(...a), // 没有 init
     ...createCurrentSessionSlice(init?.currentSession)(...a),
-    ...createConfigSlice(...a),
+    ...createConfigSlice(init?.config)(...a), // 这里传入初始化的 config
   }));
 };
 

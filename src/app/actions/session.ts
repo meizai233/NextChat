@@ -1,6 +1,6 @@
 "use server";
 
-import { createChatSessionData } from "@/lib/utils/createChatSessionData";
+import { createChatSessionData } from "@/utils/createChatSessionData";
 import { db } from "@lib/db"; // 数据库连接实例
 import { chatSession } from "@lib/db/schema"; // 你的表定义
 import { eq } from "drizzle-orm";
