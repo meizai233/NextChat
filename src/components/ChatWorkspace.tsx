@@ -22,7 +22,7 @@ export default function ChatWorkspace({ messages }: { messages: any[] }) {
   }, [messages, chatStatus]);
 
   return (
-    <div className="flex min-h-[360px] flex-col space-y-4 overflow-y-auto p-4">
+    <div className="flex min-h-[360px] flex-1 flex-col space-y-4 overflow-y-auto p-4">
       {messages.map((message) =>
         message.role === "user" ? (
           <UserMessage key={message.id} content={message.content} />
