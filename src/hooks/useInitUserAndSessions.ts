@@ -5,6 +5,7 @@ import { initAnonymousUser } from "@/app/actions/user";
 import { getUserSessions } from "@/app/actions/session";
 import { useChatStore } from "@/app/providers/chat-store-provider";
 import { nanoid } from "nanoid";
+import Cookies from "js-cookie";
 
 export function useInitUserAndSessions() {
   const userId = useChatStore((s) => s.userId);
@@ -19,6 +20,13 @@ export function useInitUserAndSessions() {
       if (!id) {
         id = nanoid();
         setUserId(id); // optimistic update
+
+        // 待办 为什么要这样设置??
+        Cookies.set("userId", id, {
+          path: "/",
+          expires: 365, // 一年过期（可按需）
+          sameSite: "Lax",
+        });
 
         try {
           await initAnonymousUser(id);
@@ -36,5 +44,7 @@ export function useInitUserAndSessions() {
         console.error("Session 加载失败:", err);
       }
     };
+
+    init();
   }, []);
 }

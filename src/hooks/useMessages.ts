@@ -6,7 +6,6 @@ import { getMessagesBySessionIdAction } from "../app/actions/message";
 // 用于获取当前会话消息
 export function useMessages() {
   const currentSessionId = useChatStore((s) => s.currentSessionId);
-  // 待办 这里要研究一下
   const {
     data: messages,
     error,
@@ -17,7 +16,7 @@ export function useMessages() {
     () => getMessagesBySessionIdAction(currentSessionId!),
     {
       revalidateOnFocus: false,
-      suspense: true,
+      // suspense: true,
     },
   );
 

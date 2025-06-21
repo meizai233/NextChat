@@ -1,49 +1,29 @@
-// src/providers/counter-store-provider.tsx
-"use client";
+import { StateCreator } from "zustand";
 
-import { type ReactNode, createContext, useRef, useContext } from "react";
-import { useStore } from "zustand";
+export type ChatStatus = "idle" | "loading" | "success" | "error";
 
-import {
-  type CounterStore,
-  createCounterStore,
-  initCounterStore,
-} from "@/stores/counter-store";
-// 消费 每个客户端组件都初始化创建一次createCounter
-export type CounterStoreApi = ReturnType<typeof createCounterStore>;
+export interface CurrentSessionSlice {
+  currentSessionId: string | null;
+  setCurrentSessionId: (id: string) => void;
 
-// 创建一个ctx
-export const CounterStoreContext = createContext<CounterStoreApi | undefined>(
-  undefined,
-);
+  chatStatus: ChatStatus;
+  setChatStatus: (status: ChatStatus) => void;
 
-export interface CounterStoreProviderProps {
-  children: ReactNode;
+  errorMessage: string | null; // 新增字段
+  setErrorMessage: (message: string | null) => void; // 新增函数
 }
-// 基于ctx封装一个provider
-export const CounterStoreProvider = ({
-  children,
-}: CounterStoreProviderProps) => {
-  const storeRef = useRef<CounterStoreApi | null>(null);
-  if (storeRef.current === null) {
-    storeRef.current = createCounterStore(initCounterStore());
-  }
+export const createCurrentSessionSlice: StateCreator<
+  CurrentSessionSlice,
+  [],
+  [],
+  CurrentSessionSlice
+> = (set) => ({
+  currentSessionId: null,
+  setCurrentSessionId: (id) => set({ currentSessionId: id }),
 
-  return (
-    <CounterStoreContext.Provider value={storeRef.current}>
-      {children}
-    </CounterStoreContext.Provider>
-  );
-};
-// useXXXStore 这样的情况是不是要把context包在最外面???
-export const useCounterStore = <T,>(
-  selector: (store: CounterStore) => T,
-): T => {
-  const counterStoreContext = useContext(CounterStoreContext);
+  chatStatus: "idle",
+  setChatStatus: (status) => set({ chatStatus: status }),
 
-  if (!counterStoreContext) {
-    throw new Error(`useCounterStore must be used within CounterStoreProvider`);
-  }
-
-  return useStore(counterStoreContext, selector);
-};
+  errorMessage: null,
+  setErrorMessage: (message) => set({ errorMessage: message }),
+});

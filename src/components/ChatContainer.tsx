@@ -12,16 +12,12 @@ export default function ChatContainer() {
   const config = useChatStore((s) => s.config);
   const { messages: historyMessages, mutate } = useMessages();
   const initialMessages = useInitialMessages();
-  const {
-    messages: sessionMessages,
-    input,
-    setInput,
-    handleSubmit,
-  } = useChat({
+  const { messages: sessionMessages } = useChat({
     id: currentSessionId!,
     initialMessages,
     body: { config },
     onFinish(_, { finishReason }) {
+      debugger;
       if (finishReason === "unknown") {
         setChatStatus("error");
         setErrorMessage("⚠️ AI 回复异常：finishReason 为 unknown");

@@ -21,7 +21,7 @@ export interface ChatStoreInit {
 
 export const createChatStore = (init?: ChatStoreInit) => {
   return createStore<ChatStore>()((...a) => ({
-    ...createUserSlice(a[0], a[1], init?.user),
+    ...createUserSlice(a[0], a[1], init?.user), //这里可以重构一下高阶函数
     ...createSessionsSlice(...a), // 没有 init
     ...createCurrentSessionSlice(init?.currentSession)(...a),
     ...createConfigSlice(...a),
