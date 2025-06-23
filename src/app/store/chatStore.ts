@@ -8,6 +8,7 @@ import {
 } from "./slices/CurrentSessionSlice";
 import { UserSlice, createUserSlice } from "./slices/userSlice";
 import { ConfigSlice, createConfigSlice } from "./slices/configSlice";
+import { createPluginSlice } from "./slices/pluginsSlice";
 
 export type ChatStore = UserSlice &
   SessionsSlice &
@@ -26,6 +27,7 @@ export const createChatStore = (init?: ChatStoreInit) => {
     ...createSessionsSlice(...a), // 没有 init
     ...createCurrentSessionSlice(init?.currentSession)(...a),
     ...createConfigSlice(init?.config)(...a), // 这里传入初始化的 config
+    ...createPluginSlice(...a),
   }));
 };
 

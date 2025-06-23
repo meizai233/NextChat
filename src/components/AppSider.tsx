@@ -1,6 +1,6 @@
 "use client";
 
-import { Inbox, Plus, Sun, Moon, Settings } from "lucide-react";
+import { Inbox, Plus, Sun, Moon, Settings, Puzzle } from "lucide-react";
 
 import {
   Sidebar,
@@ -22,6 +22,8 @@ import { useDialog } from "./chat-ui/dialog-provider";
 import { SidebarButton } from "./chat-ui/siderbar-button";
 import { IconButton } from "./ui/icon-buttom";
 import { SettingsForm } from "@/components/settings-form";
+import PluginsDialog from "./PluginsDialog";
+import { showDialog } from "@/lib/dialog";
 
 import { useTheme } from "next-themes"; // 新增
 
@@ -41,6 +43,9 @@ export default function AppSider() {
   // resolvedTheme 是当前主题（考虑系统优先级）
 
   const [mounted, setMounted] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [showPlugins, setShowPlugins] = useState(false);
+
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -85,8 +90,18 @@ export default function AppSider() {
 
   const handleSettings = useCallback(async () => {
     await showDialog({
-      title: "设置",
+      title: "Api设置",
       component: SettingsForm,
+      props: {
+        onClose: () => {},
+      },
+    });
+  }, [showDialog]);
+
+  const handlePlugins = useCallback(async () => {
+    await showDialog({
+      title: "插件设置",
+      component: PluginsDialog,
       props: {
         onClose: () => {},
       },
@@ -144,11 +159,18 @@ export default function AppSider() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <div className="border-border/50 border-t pt-4 pb-4">
+        <div className="border-border/50 flex flex-col gap-2 border-t pt-4 pb-4">
           <SidebarButton
             icon={Settings}
-            label="设置"
+            label="Api设置"
             onClick={handleSettings}
+            justify="center"
+            hideActions={true}
+          />
+          <SidebarButton
+            icon={Puzzle}
+            label="插件设置"
+            onClick={handlePlugins}
             justify="center"
             hideActions={true}
           />
