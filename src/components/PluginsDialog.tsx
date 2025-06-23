@@ -11,23 +11,28 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { DialogFooter } from "@/components/ui/dialog";
-import { useState } from "react";
+import { useChatStore } from "@/app/providers/chat-store-provider";
+import { availablePlugins } from "@/plugins";
 
 interface PluginsDialogProps {
   onClose: () => void;
 }
 
 export default function PluginsDialog({ onClose }: PluginsDialogProps) {
-  const [plugins, setPlugins] = useState({
-    imageGeneration: false,
-    codeInterpreter: false,
-    webBrowsing: false,
-  });
+  const enabledPlugins = useChatStore((s) => s.enabledPlugins);
+  const setEnabledPlugins = useChatStore((s) => s.setEnabledPlugins);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // 这里可以保存插件设置到 store 中
     onClose();
+  };
+
+  const handleTogglePlugin = (id: string, enabled: boolean) => {
+    if (enabled) {
+      setEnabledPlugins([...enabledPlugins, id]);
+    } else {
+      setEnabledPlugins(enabledPlugins.filter((pid) => pid !== id));
+    }
   };
 
   return (
@@ -38,50 +43,30 @@ export default function PluginsDialog({ onClose }: PluginsDialogProps) {
           <CardDescription>启用或禁用各种功能增强插件</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex items-center justify-between space-x-2">
-            <div className="space-y-0.5">
-              <Label>图像生成</Label>
-              <div className="text-muted-foreground text-sm">
-                支持生成、编辑和变体图像
+          {availablePlugins.map((plugin) => (
+            <div
+              key={plugin.id}
+              className="flex items-center justify-between space-x-2"
+            >
+              <div className="space-y-0.5">
+                <Label>{plugin.name}</Label>
+                <div className="text-muted-foreground text-sm">
+                  {plugin.description}
+                </div>
               </div>
+              <Switch
+                checked={enabledPlugins.includes(plugin.id)}
+                onCheckedChange={(checked) =>
+                  handleTogglePlugin(plugin.id, checked)
+                }
+              />
             </div>
-            <Switch
-              checked={plugins.imageGeneration}
-              onCheckedChange={(checked) =>
-                setPlugins((prev) => ({ ...prev, imageGeneration: checked }))
-              }
-            />
-          </div>
-
-          <div className="flex items-center justify-between space-x-2">
-            <div className="space-y-0.5">
-              <Label>代码解释器</Label>
-              <div className="text-muted-foreground text-sm">
-                执行代码、处理数据和生成图表
-              </div>
+          ))}
+          {availablePlugins.length === 0 && (
+            <div className="text-muted-foreground py-4 text-center text-sm">
+              暂无可用插件
             </div>
-            <Switch
-              checked={plugins.codeInterpreter}
-              onCheckedChange={(checked) =>
-                setPlugins((prev) => ({ ...prev, codeInterpreter: checked }))
-              }
-            />
-          </div>
-
-          <div className="flex items-center justify-between space-x-2">
-            <div className="space-y-0.5">
-              <Label>网页浏览</Label>
-              <div className="text-muted-foreground text-sm">
-                访问和分析网页内容
-              </div>
-            </div>
-            <Switch
-              checked={plugins.webBrowsing}
-              onCheckedChange={(checked) =>
-                setPlugins((prev) => ({ ...prev, webBrowsing: checked }))
-              }
-            />
-          </div>
+          )}
         </CardContent>
       </Card>
 
