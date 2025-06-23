@@ -1,5 +1,5 @@
 import type { StateCreator } from "zustand";
-import { persistToStorage } from "@/utils/storage";
+import { loadFromStorage, persistToStorage } from "@/utils/storage";
 
 export interface PluginSlice {
   enabledPlugins: string[];
@@ -7,31 +7,40 @@ export interface PluginSlice {
   togglePlugin: (id: string) => void;
 }
 
-// todo 还没检查是否可用
-export const createPluginSlice: StateCreator<PluginSlice> = (set) => ({
-  enabledPlugins: [],
+const SLICE_KEY = "plugins";
 
-  setEnabledPlugins: (ids) => {
-    set(() => {
-      // 持久化更新
-      if (typeof window !== "undefined") {
-        persistToStorage("plugins", ids);
-      }
-      return { enabledPlugins: ids };
-    });
-  },
+export const createPluginSlice =
+  (initPlugins?: string[]): StateCreator<PluginSlice, [], [], PluginSlice> =>
+  (set) => {
+    const localState =
+      typeof window !== "undefined"
+        ? loadFromStorage<string[]>(SLICE_KEY)
+        : undefined;
 
-  togglePlugin: (id) => {
-    set((state) => {
-      const newIds = state.enabledPlugins.includes(id)
-        ? state.enabledPlugins.filter((pid) => pid !== id)
-        : [...state.enabledPlugins, id];
+    return {
+      enabledPlugins: localState || initPlugins || [],
 
-      if (typeof window !== "undefined") {
-        persistToStorage("plugins", newIds);
-      }
+      setEnabledPlugins: (ids) => {
+        set(() => {
+          if (typeof window !== "undefined") {
+            persistToStorage(SLICE_KEY, ids);
+          }
+          return { enabledPlugins: ids };
+        });
+      },
 
-      return { enabledPlugins: newIds };
-    });
-  },
-});
+      togglePlugin: (id) => {
+        set((state) => {
+          const newIds = state.enabledPlugins.includes(id)
+            ? state.enabledPlugins.filter((pid) => pid !== id)
+            : [...state.enabledPlugins, id];
+
+          if (typeof window !== "undefined") {
+            persistToStorage(SLICE_KEY, newIds);
+          }
+
+          return { enabledPlugins: newIds };
+        });
+      },
+    };
+  };

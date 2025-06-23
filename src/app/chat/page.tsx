@@ -14,6 +14,7 @@ export default function ChatPage() {
   const setChatStatus = useChatStore((s) => s.setChatStatus);
   const setErrorMessage = useChatStore((s) => s.setErrorMessage);
   const config = useChatStore((s) => s.config);
+  const enabledPlugins = useChatStore((s) => s.enabledPlugins);
 
   const { messages: historyMessages, mutate } = useMessages();
 
@@ -31,7 +32,7 @@ export default function ChatPage() {
   } = useChat({
     id: currentSessionId!,
     initialMessages,
-    body: { config },
+    body: { config, plugins: enabledPlugins },
     onResponse() {
       setChatStatus("restoring");
     },

@@ -30,7 +30,6 @@ export const createSessionsSlice: StateCreator<
   setSessions: (sessions) => set({ sessions }),
 
   initializeSessions: async () => {
-    console.log(get().userId, "get().userId");
     if (get().sessions.length === 0) {
       const newSession = await createSession(get().userId);
       set((state) => ({
