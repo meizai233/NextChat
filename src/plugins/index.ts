@@ -1,3 +1,4 @@
+// 插件元信息列表（UI 显示用）
 export interface PluginMeta {
   id: string;
   name: string;
