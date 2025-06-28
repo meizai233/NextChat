@@ -40,6 +40,12 @@
         "uriFormat": "%s",
         "webRoot": "${workspaceFolder}"
       }
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "调试 tool-calling.js",
+      "program": "${workspaceFolder}/src/app/playground/ai-agent/tool-calling.js"
     }
   ]
 }
