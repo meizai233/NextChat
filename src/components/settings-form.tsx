@@ -40,64 +40,72 @@ export function SettingsForm({ onClose }: SettingsFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="space-y-4">
-        <div>
-          <h3 className="mb-2 text-lg font-medium">OpenAI 相关</h3>
+    <div className="flex h-full flex-col">
+      <div className="flex-1">
+        <h3 className="mb-6 text-lg font-medium">API 设置</h3>
+        <form id="settings-form" onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium">OpenAI 接口地址:</label>
-              <Input
-                value={formData.openaiEndpoint}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    openaiEndpoint: e.target.value,
-                  }))
-                }
-                placeholder="请输入 OpenAI 接口地址"
-              />
-            </div>
+            <div>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">
+                    OpenAI 接口地址:
+                  </label>
+                  <Input
+                    value={formData.openaiEndpoint}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        openaiEndpoint: e.target.value,
+                      }))
+                    }
+                    placeholder="请输入 OpenAI 接口地址"
+                  />
+                </div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-medium">OpenAI API Key:</label>
-              <div className="relative">
-                <Input
-                  type={showApiKey ? "text" : "password"}
-                  value={formData.openaiApiKey}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      openaiApiKey: e.target.value,
-                    }))
-                  }
-                  placeholder="请输入 OpenAI Api Key"
-                  className="pr-10"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowApiKey(!showApiKey)}
-                  className={cn(
-                    "absolute top-1/2 right-3 -translate-y-1/2",
-                    "text-muted-foreground hover:text-foreground",
-                    "transition-colors",
-                    "cursor-pointer",
-                  )}
-                >
-                  {showApiKey ? <EyeOff size={16} /> : <Eye size={16} />}
-                </button>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">OpenAI API Key:</label>
+                  <div className="relative">
+                    <Input
+                      type={showApiKey ? "text" : "password"}
+                      value={formData.openaiApiKey}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          openaiApiKey: e.target.value,
+                        }))
+                      }
+                      placeholder="请输入 OpenAI Api Key"
+                      className="pr-10"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowApiKey(!showApiKey)}
+                      className={cn(
+                        "absolute top-1/2 right-3 -translate-y-1/2",
+                        "text-muted-foreground hover:text-foreground",
+                        "transition-colors",
+                        "cursor-pointer",
+                      )}
+                    >
+                      {showApiKey ? <EyeOff size={16} /> : <Eye size={16} />}
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </form>
       </div>
 
-      <div className="flex justify-end space-x-2">
+      <div className="flex justify-end space-x-2 border-t pt-6">
         <Button type="button" variant="outline" onClick={onClose}>
           取消
         </Button>
-        <Button type="submit">保存</Button>
+        <Button type="submit" form="settings-form">
+          保存
+        </Button>
       </div>
-    </form>
+    </div>
   );
 }

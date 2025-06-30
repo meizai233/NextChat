@@ -1,0 +1,11 @@
+{
+  "error": {
+    "name": "AI_ToolExecutionError",
+    "cause": {},
+    "toolArgs": {
+      "location": "北京"
+    },
+    "toolName": "get_current_weather",
+    "toolCallId": "call_ozWwZ3jXvYUt5LHavLYP91ma"
+  }
+}

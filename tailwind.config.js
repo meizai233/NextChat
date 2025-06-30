@@ -6,8 +6,7 @@ module.exports = {
     "./src/**/*.{js,ts,jsx,tsx}", // 如果你有 src/ui 等路径
   ],
   theme: {
-    extend: {
-    },
+    extend: {},
   },
   darkMode: "class",
 };

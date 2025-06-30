@@ -8,8 +8,10 @@ config({ path: path.resolve(process.cwd(), ".env.local") });
 
 async function generateMarketingCopy(input) {
   const openai = createOpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-    baseURL: process.env.OPENAI_BASE_URL,
+    // apiKey: process.env.OPENAI_API_KEY,
+    // baseURL: process.env.OPENAI_BASE_URL,
+    apiKey: "sk-FQg78d21d5842b15485cb315b70f4b58daff16a433eHPvd6",
+    baseURL: "https://api.gptsapi.net/v1",
   });
 
   // 第一步：生成营销文案

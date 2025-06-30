@@ -9,12 +9,14 @@ import {
 import { UserSlice, createUserSlice } from "./slices/userSlice";
 import { ConfigSlice, createConfigSlice } from "./slices/configSlice";
 import { createPluginSlice, PluginSlice } from "./slices/pluginsSlice";
+import { createPluginKeySlice, PluginKeySlice } from "./slices/PluginKeySlice";
 
 export type ChatStore = UserSlice &
   SessionsSlice &
   CurrentSessionSlice &
   ConfigSlice &
-  PluginSlice;
+  PluginSlice &
+  PluginKeySlice;
 
 export interface ChatStoreInit {
   user?: Partial<UserSlice>;
@@ -30,6 +32,7 @@ export const createChatStore = (init?: ChatStoreInit) => {
     ...createCurrentSessionSlice(init?.currentSession)(...a),
     ...createConfigSlice(init?.config)(...a), // 这里传入初始化的 config
     ...createPluginSlice(init?.plugins)(...a),
+    ...createPluginKeySlice(...a),
   }));
 };
 

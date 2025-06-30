@@ -27,6 +27,13 @@
       "@assets/*": ["./src/assets/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "tmp.js",
+    "src/app/playground/ai-agent/weatherPlugin.js"
+  ],
   "exclude": ["node_modules"]
 }
