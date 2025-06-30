@@ -1,8 +1,7 @@
-// 注册插件函数
 import { tool } from "ai";
 import { z } from "zod";
 import * as weather from "@/plugins/weather";
-import { crawlWebPage } from "../plugins/crawlPlugin";
+import { crawlWebPage } from "../plugins/crawl";
 
 export const pluginToolMap = {
   get_current_weather: tool({
@@ -10,14 +9,14 @@ export const pluginToolMap = {
     parameters: z.object({
       location: z.string().describe("城市名称"),
     }),
-    execute: async (parmas) => await weather.execute(parmas),
+    execute: async (params) => weather.execute(params),
   }),
   web_crawl: tool({
     description: "爬取网页正文内容",
     parameters: z.object({
       url: z.string().url().describe("网页链接"),
     }),
-    execute: async ({ url }) => await crawlWebPage(url),
+    execute: async (params) => await crawlWebPage(params),
   }),
   // web_search: tool({
   //   description: "通过互联网搜索信息",

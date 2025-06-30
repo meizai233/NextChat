@@ -4,7 +4,7 @@ import { db } from "@lib/db";
 import { chatMessage } from "@lib/db/schema";
 import { streamText } from "ai";
 import { nanoid } from "nanoid";
-import { getEnabledPlugins } from "@/plugin-system/gateway";
+import { getEnabledPlugins } from "@/plugin-system/utils/getEnabledPlugins";
 import { PluginResult } from "@/plugins/weather/types";
 
 // Allow streaming responses up to 30 seconds
@@ -28,7 +28,7 @@ export async function POST(req: Request) {
   });
 
   const enabledTools = getEnabledPlugins(enabledPluginIds, pluginKeys);
-  console.log(enabledTools, "enabledTools");
+
   // Call the language model
   // 待办 streamText是啥呢
   const result = await streamText({

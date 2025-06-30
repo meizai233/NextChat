@@ -32,6 +32,7 @@ export function wrapPluginTool(
             meta: { missingKeys },
           };
         }
+        // todo 修改其他插件的规范
         return await baseTool.execute({ ...params, __pluginKeys: keys });
       } catch (e: any) {
         return {

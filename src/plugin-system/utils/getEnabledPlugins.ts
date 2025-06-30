@@ -1,7 +1,5 @@
-// plugin-system/gateway.ts
-import { pluginToolMap } from "@/plugin-system/registry";
-import { wrapPluginTool } from "./utils/wrapPluginTool";
-
+import { wrapPluginTool } from "./wrapPluginTool";
+import { pluginToolMap } from "../pluginToolMap";
 export function getEnabledPlugins(
   enabledPluginIds: string[],
   pluginKeys: Record<string, Record<string, string>>,
