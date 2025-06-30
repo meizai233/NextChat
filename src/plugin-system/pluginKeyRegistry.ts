@@ -1,6 +1,6 @@
 import { PluginApiKeyConfig } from "./types";
 
-export const pluginApiKeys: PluginApiKeyConfig = {
+export const pluginKeyMeta: PluginApiKeyConfig = {
   get_current_weather: [
     {
       key: "OPENWEATHER_API_KEY",
@@ -19,17 +19,17 @@ export const pluginApiKeys: PluginApiKeyConfig = {
   ],
   web_search: [
     {
-      key: "BING_SEARCH_API_KEY",
-      name: "Bing Search API Key",
-      description: "用于网页搜索的 Bing API 密钥",
-      placeholder: "请输入 Bing Search API Key",
+      key: "SEARCH_API_IO_KEY",
+      name: "SearchAPI.io Key",
+      description: "用于网页搜索的 SearchAPI.io 密钥",
+      placeholder: "请输入 SearchAPI.io 的 API Key",
       required: true,
     },
   ],
 };
 
 export const pluginRequiredKeysMap: Record<string, string[]> = Object.entries(
-  pluginApiKeys,
+  pluginKeyMeta,
 ).reduce(
   (acc, [pluginId, keys]) => ({
     ...acc,

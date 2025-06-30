@@ -29,6 +29,7 @@ export async function POST(req: Request) {
 
   const enabledTools = getEnabledPlugins(enabledPluginIds, pluginKeys);
 
+  console.log(enabledTools, "enabledTools");
   // Call the language model
   // 待办 streamText是啥呢
   const result = await streamText({

@@ -29,7 +29,6 @@ export const createPluginKeySlice: StateCreator<
 
     setPluginKey: (pluginId, keyName, keyValue) => {
       set((state) => {
-        debugger;
         const updated = {
           ...state.pluginKeys,
           [pluginId]: {
@@ -37,7 +36,6 @@ export const createPluginKeySlice: StateCreator<
             [keyName]: keyValue,
           },
         };
-        debugger;
 
         persistToStorage(PLUGIN_KEY_STORAGE, updated);
         return { pluginKeys: updated };
@@ -54,7 +52,6 @@ export const createPluginKeySlice: StateCreator<
     },
 
     getPluginKey: (pluginId, keyName) => {
-      debugger;
       return get().pluginKeys?.[pluginId]?.[keyName];
     },
   };

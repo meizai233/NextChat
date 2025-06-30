@@ -9,11 +9,11 @@ import { cn } from "@/lib/utils";
 import { PluginMeta } from "@/plugins";
 import { useChatStore } from "@/app/providers/chat-store-provider";
 
-interface PluginApiKeysFormProps {
+interface pluginKeyMetaFormProps {
   plugin: PluginMeta;
 }
 
-export function PluginApiKeysForm({ plugin }: PluginApiKeysFormProps) {
+export function PluginKeyMetaForm({ plugin }: pluginKeyMetaFormProps) {
   const [showKeys, setShowKeys] = useState<Record<string, boolean>>({});
   const setPluginKey = useChatStore((s) => s.setPluginKey);
   const getPluginKey = useChatStore((s) => s.getPluginKey);

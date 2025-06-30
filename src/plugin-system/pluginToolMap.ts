@@ -2,6 +2,7 @@ import { tool } from "ai";
 import { z } from "zod";
 import * as weather from "@/plugins/weather";
 import { crawlWebPage } from "../plugins/crawl";
+import { searchWeb } from "@/plugins/search/searchWeb";
 
 export const pluginToolMap = {
   get_current_weather: tool({
@@ -18,11 +19,13 @@ export const pluginToolMap = {
     }),
     execute: async (params) => await crawlWebPage(params),
   }),
-  // web_search: tool({
-  //   description: "通过互联网搜索信息",
-  //   parameters: z.object({
-  //     query: z.string().describe("用户查询内容"),
-  //   }),
-  //   execute: async ({ query }) => await searchWeb(query),
-  // }),
+  web_search: tool({
+    description: "通过互联网搜索信息",
+    parameters: z.object({
+      query: z.string().describe("用户查询内容，例如：OpenAI 是什么"),
+    }),
+    async execute(params) {
+      return await searchWeb(params);
+    },
+  }),
 };

@@ -4,8 +4,8 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { useChatStore } from "@/app/providers/chat-store-provider";
 import { availablePlugins } from "@/plugins";
-import { PluginApiKeysForm } from "./plugin-api-keys-form";
 import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
+import { PluginKeyMetaForm } from "./plugin-key-meta-form";
 
 export function PluginsForm() {
   const enabledPlugins = useChatStore((s) => s.enabledPlugins);
@@ -46,7 +46,7 @@ export function PluginsForm() {
               {plugin.apiKeys && (
                 <Collapsible open={enabledPlugins.includes(plugin.id)}>
                   <CollapsibleContent className="data-[state=open]:animate-collapsible-down data-[state=closed]:animate-collapsible-up">
-                    <PluginApiKeysForm plugin={plugin} />
+                    <PluginKeyMetaForm plugin={plugin} />
                   </CollapsibleContent>
                 </Collapsible>
               )}
