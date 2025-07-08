@@ -1,7 +1,32 @@
 import { StateCreator } from "zustand";
-import Cookies from "js-cookie"; // 安装：npm install js-cookie
+import Cookies from "js-cookie";
 
-export type ChatStatus = "idle" | "loading" | "success" | "error" | "restoring";
+export type ChatStatus =
+  | "idle"
+  | "loading"
+  | "success"
+  | "error"
+  | "restoring"
+  | "plugin-calling";
+
+// Step 相关类型定义
+interface ToolCall {
+  toolName: string;
+  toolCallId: string;
+}
+
+interface ToolResult {
+  toolCallId: string;
+  content?: string;
+  url?: string;
+}
+
+export interface StepMessage {
+  finishReason: string;
+  text?: string;
+  toolCalls?: ToolCall[];
+  toolResults?: ToolResult[];
+}
 
 export interface CurrentSessionSlice {
   currentSessionId: string | null;
@@ -10,8 +35,13 @@ export interface CurrentSessionSlice {
   chatStatus: ChatStatus;
   setChatStatus: (status: ChatStatus) => void;
 
-  errorMessage: string | null; // 新增字段
-  setErrorMessage: (message: string | null) => void; // 新增函数
+  errorMessage: string | null;
+  setErrorMessage: (message: string | null) => void;
+
+  // 新增 steps 相关状态
+  steps: StepMessage[];
+  addStep: (step: StepMessage) => void;
+  clearSteps: () => void;
 }
 
 export interface CurrentSessionSliceInit {
@@ -27,11 +57,9 @@ export const createCurrentSessionSlice =
       currentSessionId: init?.currentSessionId ?? null,
       setCurrentSessionId: (id) => {
         set({ currentSessionId: id });
-
-        // ✅ 同步设置 cookie，供 SSR 使用
         Cookies.set("currentSessionId", id, {
           path: "/",
-          expires: 30, // 持久时间可调
+          expires: 30,
           sameSite: "Lax",
         });
       },
@@ -41,5 +69,13 @@ export const createCurrentSessionSlice =
 
       errorMessage: null,
       setErrorMessage: (message) => set({ errorMessage: message }),
+
+      // steps 相关状态实现
+      steps: [],
+      addStep: (step) =>
+        set((state) => ({
+          steps: [...state.steps, step],
+        })),
+      clearSteps: () => set({ steps: [] }),
     };
   };

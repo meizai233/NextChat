@@ -7,7 +7,17 @@ import ChatWorkspace from "@/components/ChatWorkspace";
 import InputPanel from "@/components/InputPanel";
 import { useMessages } from "@/hooks/useMessages";
 import { useInitialMessages } from "@/hooks/useInitialMessages";
-import { useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
+import { startPluginStepStream } from "@/hooks/startPluginStepStream";
+type PluginStepMessage = {
+  id: string;
+  role: "plugin-step";
+  toolCall: {
+    toolName: string;
+    args: any;
+  };
+  toolCallId: string;
+};
 
 export default function ChatPage() {
   const currentSessionId = useChatStore((s) => s.currentSessionId);
@@ -16,7 +26,10 @@ export default function ChatPage() {
   const config = useChatStore((s) => s.config);
   const enabledPlugins = useChatStore((s) => s.enabledPlugins);
   const pluginKeys = useChatStore((s) => s.pluginKeys);
-
+  const addStep = useChatStore((s) => s.addStep);
+  const [stopPluginStream, setStopPluginStream] = useState<(() => void) | null>(
+    null,
+  );
   const { messages: historyMessages, mutate } = useMessages();
 
   const initialMessages = useMemo(() => {
@@ -29,13 +42,18 @@ export default function ChatPage() {
     messages: sessionMessages,
     input,
     setInput,
-    handleSubmit,
+    handleSubmit: baseHandleSubmit,
   } = useChat({
     id: currentSessionId!,
     initialMessages,
     body: { config, plugins: enabledPlugins, "plugin-keys": pluginKeys },
     onResponse() {
       setChatStatus("restoring");
+    },
+    // 在这里直接render一个UI即可
+    onToolCall(obj) {
+      console.log(obj, "onToolcall");
+      setChatStatus("plugin-calling");
     },
     onFinish(_, { finishReason }) {
       if (finishReason === "unknown") {
@@ -45,12 +63,32 @@ export default function ChatPage() {
         setChatStatus("success");
         setErrorMessage(null);
       }
+      stopPluginStream?.(); // 结束后关闭监听
+      setStopPluginStream(null);
     },
     onError(error) {
       setChatStatus("error");
       setErrorMessage(error instanceof Error ? error.message : "未知错误");
+      stopPluginStream?.(); // 结束后关闭监听
+      setStopPluginStream(null);
     },
   });
+
+  const handleSubmit = useCallback(
+    async (e) => {
+      const stop = startPluginStepStream({
+        currentSessionId,
+        onMessage: (msg) => {
+          addStep(msg);
+          console.log("plugin step >>>", msg);
+        },
+      });
+      setStopPluginStream(() => stop);
+
+      baseHandleSubmit(e);
+    },
+    [baseHandleSubmit, currentSessionId],
+  );
 
   return (
     <div className="flex h-dvh w-full min-w-0 flex-col">

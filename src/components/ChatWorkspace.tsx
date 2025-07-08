@@ -1,47 +1,69 @@
 "use client";
 import { useEffect, useRef } from "react";
-import hljs from "highlight.js";
-import "highlight.js/styles/github.css";
-import UserMessage from "./UserMessage";
 import AIMessage from "./AIMessage";
-import { useChatStore } from "@/app/providers/chat-store-provider";
-import { DotPulse } from "@uiball/loaders";
+import UserMessage from "./UserMessage";
 import ErrorMessage from "./ErrorMessage";
-// todo 你是一个助手应该显示在最开始 而且应该加个判断
-// todo key重复问题
-export default function ChatWorkspace({ messages }: { messages: any[] }) {
-  useEffect(() => {
-    hljs.highlightAll();
-  }, [messages]);
-  const chatStatus = useChatStore((s) => s.chatStatus);
+import { renderPluginUIs } from "@/utils/renderPluginUIs";
+import { useChatStore } from "@/app/providers/chat-store-provider";
 
+interface ChatMessage {
+  id: string;
+  role: string;
+  content: string;
+}
+
+interface Props {
+  messages: ChatMessage[];
+  error?: string | null;
+}
+
+export default function ChatWorkspace({ messages, error }: Props) {
+  const chatStatus = useChatStore((s) => s.chatStatus);
+  const steps = useChatStore((s) => s.steps);
+
+  // 添加滚动到底部的功能
   const bottomRef = useRef<HTMLDivElement>(null);
-  // 每次 messages 或 status 变化 → 滚动到底部
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, chatStatus]);
 
+  useEffect(() => console.log(steps, "addstep", [steps]));
+
   return (
     <div className="flex min-h-[360px] flex-1 flex-col space-y-4 overflow-y-auto p-4">
-      {messages.map((message) =>
-        message.role === "user" ? (
-          <UserMessage key={message.id} content={message.content} />
-        ) : (
-          <AIMessage key={message.id} content={message.content} />
-        ),
-      )}
+      {messages.map((message) => {
+        if (message.role === "user") {
+          return <UserMessage key={message.id} content={message.content} />;
+        }
+
+        // if (message.role === "plugin-calling") {
+        //   const pluginData = JSON.parse(message.content);
+        //   return renderPluginUIs({
+        //     finishReason: pluginData.finishReason,
+        //     toolCalls: pluginData.toolCalls,
+        //     toolResults: pluginData.toolResults,
+        //   }).map((ui, index) => (
+        //     <PluginMessage key={`${message.id}-${index}`} ui={ui} />
+        //   ));
+        // }
+
+        return <AIMessage key={message.id} content={message.content} />;
+      })}
+
+      {/* 插件ui */}
+      {steps.map((step) => {
+        const toolResults = step.response?.messages?.find(
+          (msg) => msg.role === "tool",
+        )?.content;
+        return toolResults ? renderPluginUIs(toolResults) : null;
+      })}
 
       {/* loading 气泡：只显示在 assistant 回复还没回来时 */}
-      {chatStatus === "loading" && (
-        <div className="flex justify-start">
-          <div className="max-w-[75%] px-4 py-3">
-            <DotPulse size={40} speed={1.3} color="black" />
-          </div>
-        </div>
-      )}
-      {chatStatus === "error" && <ErrorMessage />}
+      {chatStatus === "loading" ||
+        (chatStatus === "plugin-calling" && <AIMessage content="思考中..." />)}
+      {error && <ErrorMessage content={error} />}
 
-      {/* 锚点元素：滚动的目标 */}
+      {/* 滚动锚点 */}
       <div ref={bottomRef} />
     </div>
   );

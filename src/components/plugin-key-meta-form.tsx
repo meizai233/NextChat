@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import { PluginMeta } from "@/plugins";
+import { PluginMeta } from "@/plugins/pluginsMeta";
 import { useChatStore } from "@/app/providers/chat-store-provider";
 
 interface pluginKeyMetaFormProps {

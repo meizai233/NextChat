@@ -6,6 +6,7 @@ import { streamText } from "ai";
 import { nanoid } from "nanoid";
 import { getEnabledPlugins } from "@/plugin-system/utils/getEnabledPlugins";
 import { PluginResult } from "@/plugins/weather/types";
+import { publishStepMessage } from "@/lib/chat-event-bus";
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
@@ -40,9 +41,34 @@ export async function POST(req: Request) {
     async onError(err) {
       saveObjectToFile(err, "err");
     },
-    // todo showUI步骤放在step好还是onfinish好
+    // todo 在这里sse并且插入plugin-step 但是
+    // todo 拦截所有错误回复并抛出
     async onStepFinish(step) {
-      // todo 拦截所有错误回复并抛出
+      // 拿到step并publish
+      publishStepMessage(chatSessionId, step);
+
+      // 存储到数据库
+      if (step.finishReason === "tool-calls") {
+        // await db.insert(chatMessage).values({
+        //   id: nanoid(),
+        //   chatSessionId,
+        //   role: "plugin-calling",
+        //   content: JSON.stringify({
+        //     toolCalls: step.toolCalls || [],
+        //     toolResults: step.toolResults || [],
+        //     finishReason: step.finishReason,
+        //   }),
+        // });
+      } else {
+        await db.insert(chatMessage).values({
+          id: nanoid(),
+          chatSessionId,
+          role: "assistant",
+          content: step.text || "",
+        });
+      }
+
+      // 检查API Key缺失
       for (const result of step.toolResults || []) {
         const toolResult = result.result as PluginResult<unknown>;
         if (
@@ -51,7 +77,6 @@ export async function POST(req: Request) {
         ) {
           const keys = toolResult.meta?.missingKeys || [];
           console.log("🧩 插件缺少 API Key:", keys.join(", "));
-          // TODO: 你可以弹出 UI 引导设置这些 keys
         }
       }
     },

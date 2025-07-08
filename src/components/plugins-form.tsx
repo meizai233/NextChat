@@ -3,7 +3,7 @@
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { useChatStore } from "@/app/providers/chat-store-provider";
-import { availablePlugins } from "@/plugins";
+import { pluginsMeta } from "@/plugins/pluginsMeta";
 import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
 import { PluginKeyMetaForm } from "./plugin-key-meta-form";
 
@@ -27,7 +27,7 @@ export function PluginsForm() {
           启用或禁用各种功能增强插件
         </p>
         <div className="space-y-6">
-          {availablePlugins.map((plugin) => (
+          {pluginsMeta.map((plugin) => (
             <div key={plugin.id} className="space-y-4">
               <div className="flex items-center justify-between space-x-2">
                 <div className="space-y-0.5">
@@ -52,7 +52,7 @@ export function PluginsForm() {
               )}
             </div>
           ))}
-          {availablePlugins.length === 0 && (
+          {pluginsMeta.length === 0 && (
             <div className="text-muted-foreground py-4 text-center text-sm">
               暂无可用插件
             </div>

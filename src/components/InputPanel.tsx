@@ -12,10 +12,9 @@ export default function InputPanel({ value, onChange, onSend }) {
   const handleKeyDown = useCallback(
     (e: KeyboardEvent<HTMLTextAreaElement>) => {
       if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
         setChatStatus("loading");
 
-        onSend();
+        onSend(e);
       }
     },
     [onSend],

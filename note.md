@@ -1,3 +1,19 @@
+### sse推送机制：
+
+- 在onStepFinish 拿到plugin 如果该plugin有ui 则publish发布到sessionId 把信息带过去（为什么是publish?，是多对多的关系吗？谁去订阅？）
+- 在onFinish 耶publish过去
+- public所做的事情，触发sessionId通道❓ 给该通道发送msg data
+- 在subscribe所做的事 订阅sessionId通道❓ 订阅到该通道后 调用cb
+
+- 整理版
+- 后端在get时 创建一个readableStream，start时订阅sessionId消息流，在onStrepFinish时publish消息流（由于2个请求无法共享上下文）
+- 前端在发送消息时 new EventSource消费消息流 并把对应ui组件挂载出来
+
+为什么要用发布订阅机制？
+sse是用get推送，llm模型调用是用post请求，二者不独立，无共享上下文。在post的插件调用中途把data传给get请求中的数据 how to？
+我理解也可以用其他方案，比如data insert到数据库 数据库再读取，但这样没有自动钩子吧 get收不到通知（还得监听？数据库），性能损耗+实时性不高
+对于生产环境的考虑，单机部署的轻量级方案就是node的发布订阅 -> 多实例部署的方案可以考虑redis的发布订阅。
+
 ### 后续可以深入的点
 
 - streamText 如何实现流式传输的 可以关注 readable stream
