@@ -3,6 +3,7 @@ import { EventEmitter } from "events";
 export const chatEventBus = new EventEmitter();
 
 export function publishStepMessage(sessionId: string, message: any) {
+  console.log(message, "messageeee");
   chatEventBus.emit(sessionId, message);
 }
 

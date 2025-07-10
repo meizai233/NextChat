@@ -2,15 +2,23 @@
 
 import { RefreshCw, Copy, Trash } from "lucide-react";
 import ChatBubble from "./ChatBubble";
-import { useChatStore } from "@/app/providers/chat-store-provider";
+import { useCopy } from "@/hooks/useCopy";
 
-export default function ErrorMessage() {
-  const errorMessage = useChatStore((s) => s.errorMessage);
+interface Props {
+  content: string;
+}
+
+export default function ErrorMessage({ content }: Props) {
+  const { isCopied, copyToClipboard } = useCopy();
+
+  const handleCopy = () => {
+    copyToClipboard(content);
+  };
 
   return (
     <ChatBubble
+      content={content}
       isUser={false}
-      content={errorMessage!}
       error
       actions={[
         {
@@ -20,8 +28,8 @@ export default function ErrorMessage() {
         },
         {
           icon: <Copy size={16} />,
-          label: "复制",
-          onClick: () => console.log("copy"),
+          label: isCopied ? "已复制" : "复制",
+          onClick: handleCopy,
         },
         {
           icon: <Trash size={16} />,

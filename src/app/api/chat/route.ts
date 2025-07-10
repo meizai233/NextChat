@@ -30,7 +30,7 @@ export async function POST(req: Request) {
 
   const enabledTools = getEnabledPlugins(enabledPluginIds, pluginKeys);
 
-  console.log(enabledTools, "enabledTools");
+  // console.log(enabledTools, "enabledTools");
   // Call the language model
   // 待办 streamText是啥呢
   const result = await streamText({
@@ -45,10 +45,9 @@ export async function POST(req: Request) {
     // todo 拦截所有错误回复并抛出
     async onStepFinish(step) {
       // 拿到step并publish
-      publishStepMessage(chatSessionId, step);
-
-      // 存储到数据库
-      if (step.finishReason === "tool-calls") {
+      console.log(step.toolResults.length, "stepppp");
+      if (step.toolResults.length > 0) {
+        publishStepMessage(chatSessionId, step);
         // await db.insert(chatMessage).values({
         //   id: nanoid(),
         //   chatSessionId,

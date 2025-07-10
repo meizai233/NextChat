@@ -15,7 +15,7 @@ interface ToolCall {
   toolCallId: string;
 }
 
-interface ToolResult {
+export interface ToolResult {
   toolCallId: string;
   content?: string;
   url?: string;

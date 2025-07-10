@@ -7,17 +7,8 @@ import ChatWorkspace from "@/components/ChatWorkspace";
 import InputPanel from "@/components/InputPanel";
 import { useMessages } from "@/hooks/useMessages";
 import { useInitialMessages } from "@/hooks/useInitialMessages";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { startPluginStepStream } from "@/hooks/startPluginStepStream";
-type PluginStepMessage = {
-  id: string;
-  role: "plugin-step";
-  toolCall: {
-    toolName: string;
-    args: any;
-  };
-  toolCallId: string;
-};
 
 export default function ChatPage() {
   const currentSessionId = useChatStore((s) => s.currentSessionId);
@@ -33,6 +24,7 @@ export default function ChatPage() {
   const { messages: historyMessages, mutate } = useMessages();
 
   const initialMessages = useMemo(() => {
+    console.log(historyMessages, "history");
     return historyMessages && historyMessages.length > 1
       ? historyMessages
       : useInitialMessages();
@@ -55,7 +47,7 @@ export default function ChatPage() {
       console.log(obj, "onToolcall");
       setChatStatus("plugin-calling");
     },
-    onFinish(_, { finishReason }) {
+    onFinish(msg, { finishReason }) {
       if (finishReason === "unknown") {
         setChatStatus("error");
         setErrorMessage("⚠️ AI 回复异常：finishReason 为 unknown");
@@ -73,6 +65,10 @@ export default function ChatPage() {
       setStopPluginStream(null);
     },
   });
+
+  useEffect(() => {
+    console.log(sessionMessages, "sessionMessages");
+  }, [sessionMessages]);
 
   const handleSubmit = useCallback(
     async (e) => {

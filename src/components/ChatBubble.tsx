@@ -21,6 +21,7 @@ interface ChatBubbleProps {
   isUser: boolean;
   error?: boolean;
   actions?: ActionItem[];
+  children?: ReactNode;
 }
 
 export default function ChatBubble({
@@ -28,6 +29,7 @@ export default function ChatBubble({
   isUser,
   error = false,
   actions = [],
+  children,
 }: ChatBubbleProps) {
   return (
     <div
@@ -38,6 +40,8 @@ export default function ChatBubble({
         className={`prose prose-sm max-w-[75%] rounded-xl px-4 py-3 text-sm shadow-sm transition-colors ${isUser ? "bg-user-bubble-bg" : error ? "bg-red-50 text-red-600" : "bg-ai-bubble-bg"} prose-p:my-2 prose-pre:p-3 prose-code:before:content-none prose-code:after:content-none`}
       >
         <div dangerouslySetInnerHTML={{ __html: marked.parse(content) }} />
+        {/* 插件插槽 */}
+        {children && <div className="mt-4">{children}</div>}
       </div>
 
       {/* 操作按钮区域，放气泡左下角 */}
