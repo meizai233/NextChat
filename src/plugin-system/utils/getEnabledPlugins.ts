@@ -6,8 +6,8 @@ export function getEnabledPlugins(
 ) {
   return Object.fromEntries(
     enabledPluginIds
-      .filter((id) => pluginToolMap[id])
-      .map((id) => {
+      ?.filter((id) => pluginToolMap[id])
+      ?.map((id) => {
         const baseTool = pluginToolMap[id];
         const wrappedTool = wrapPluginTool(baseTool, id, pluginKeys);
         return [id, wrappedTool];

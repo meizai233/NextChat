@@ -47,6 +47,10 @@ export default function ChatPage() {
       console.log(obj, "onToolcall");
       setChatStatus("plugin-calling");
     },
+    onToolCallResult(val) {
+      // debugger;
+      console.log(val, "onToolCallResult");
+    },
     onFinish(msg, { finishReason }) {
       if (finishReason === "unknown") {
         setChatStatus("error");

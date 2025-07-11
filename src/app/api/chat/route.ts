@@ -28,7 +28,9 @@ export async function POST(req: Request) {
     baseURL: config?.openaiEndpoint || process.env.OPENAI_BASE_URL,
   });
 
-  const enabledTools = getEnabledPlugins(enabledPluginIds, pluginKeys);
+  const enabledTools = enabledPluginIds
+    ? getEnabledPlugins(enabledPluginIds, pluginKeys)
+    : [];
 
   // console.log(enabledTools, "enabledTools");
   // Call the language model

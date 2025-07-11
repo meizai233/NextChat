@@ -1,7 +1,6 @@
 import { NextRequest } from "next/server";
 
 import { subscribeStepMessages } from "@/lib/chat-event-bus";
-import saveObjectToFile from "@/utils/saveObjectToFile";
 
 // SSE 推送
 // 创建一个readableStream，该stream在创建时订阅stepMsg并且把msg一直往该可读流写
@@ -25,7 +24,6 @@ export async function GET(req: NextRequest) {
 
       // 创建一个subscribe 方法 在llm onStepFinish时 把msg推送过来 触发cb msg send到readableStream中，该readableSteram作为sse的payload给到客户端
       const unsubscribe = subscribeStepMessages(currentSessionId, (msg) => {
-        saveObjectToFile(msg, "msg2");
         send(msg);
       });
       // 这啥意思 监听abort事件 断开后取消订阅 那如何发送给客户端
